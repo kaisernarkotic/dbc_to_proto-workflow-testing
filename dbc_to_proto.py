@@ -148,8 +148,3 @@ with open("hytech.proto", "w+") as proto_file:
     for key in enum_definitions:
         proto_file.write(enum_definitions[key])
     proto_file.write(content)
-    
-for message in db.messages:
-    print(f"Message: {message.name}, Comment: {message.comment}")
-    for signal in message.signals:
-        print(f"  Signal: {signal.name}, Comment: {signal.comment}")

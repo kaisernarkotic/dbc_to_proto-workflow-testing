@@ -34,7 +34,7 @@ jobs:
     needs: generate-dbc
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/rcmast3r/ccoderdbc:main
+      image: ghcr.io/kaisernarkotic/ccoderdbc:main
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4

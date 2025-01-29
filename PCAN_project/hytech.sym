@@ -1,0 +1,2036 @@
+FormatVersion=6.0 // Do not edit this line!
+Title="SYM Database"
+
+{ENUMS}
+Enum=ecu_stateE(0="STARTUP", 1="TRACTIVE_SYSTEM_NOT_ACTIVE", 2="TRACTIVE_SYSTEM_ACTIVE", 3="ENABLING_INVERTER",
+  4="WAITING_READY_TO_DRIVE_SOUND", 5="READY_TO_DRIVE")
+Enum=dial_stateE(0="MODE_0", 1="MODE_1", 2="MODE_2", 3="MODE_3", 4="MODE_4", 5="MODE_5")
+Enum=dashboard_ledE(0="OFF", 1="ON", 2="YELLOW", 3="RED")
+Enum=vn_gps_fixE(0="NO_FIX", 1="TIME_ONLY", 2="FIX_2D", 3="FIX_3D")
+Enum=tcu_recordingE(0="NOT_RECORDING", 1="REQUESTING_RECORD", 2="RECORDING", 3="SAVING_RECORDING")
+Enum=tc_mux_status(0="NO_ERROR", 1="ERROR_SPEED_DIFF_TOO_HIGH", 2="ERROR_TORQUE_DIFF_TOO_HIGH",
+  3="ERROR_CONTROLLER_INDEX_OUT_OF_BOUNDS", 4="ERROR_CONTROLLER_NULL_POINTER")
+Enum=steering_analog_statusE(0="", // GOOD!
+  1="") // Clamped!
+Enum=steering_system_statusE(0="", // nominal
+  1="", // marginal
+  2="", // degraded
+  3="") // error
+Enum=steering_encoder_statusE(0="", // nominal
+  1="", // marginal
+  2="") // error
+
+{SIGNALS}
+Sig=system_ready unsigned 1
+Sig=error unsigned 1
+Sig=warning unsigned 1
+Sig=quit_dc_on unsigned 1
+Sig=dc_on unsigned 1
+Sig=quit_inverter_on unsigned 1
+Sig=inverter_on unsigned 1
+Sig=derating_on unsigned 1
+Sig=speed_rpm signed 16
+Sig=torque_current signed 16 /u:A /f:0.1
+Sig=magnetizing_current signed 16 /u:A
+Sig=motor_temp signed 16 /u:C /f:0.1
+Sig=inverter_temp signed 16 /u:C /f:0.1
+Sig=diagnostic_number unsigned 16
+Sig=igbt_temp signed 16 /u:C /f:0.1
+Sig=dc_bus_voltage unsigned 16 /u:V
+Sig=motor_power unsigned 32 // Made up units from AMK
+Sig=feedback_torque signed 16 /u:Mn // random made up AMK units
+Sig=inverter_enable unsigned 1
+Sig=hv_enable unsigned 1
+Sig=driver_enable unsigned 1
+Sig=remove_error unsigned 1
+Sig=speed_setpoint_rpm signed 16 /u:rpm
+Sig=positive_torque_limit signed 16 /u:Mn /f:0.01 // Made up units from AMK
+Sig=negative_torque_limit signed 16 /u:Mn /f:0.01 // AMK made up unit
+Sig=torque_command signed 16 /u:"% Mn" /f:0.1 // Made up unit by AMK (consult Shayan)
+Sig=imd_ok_high unsigned 1
+Sig=shutdown_b_above_threshold unsigned 1
+Sig=bms_ok_high unsigned 1
+Sig=shutdown_c_above_threshold unsigned 1
+Sig=bspd_ok_high unsigned 1
+Sig=shutdown_d_above_threshold unsigned 1
+Sig=software_ok_high unsigned 1
+Sig=shutdown_e_above_threshold unsigned 1
+Sig=mechanical_brake_active unsigned 1
+Sig=no_accel_implausibility unsigned 1
+Sig=no_brake_implausibility unsigned 1
+Sig=brake_pedal_active unsigned 1
+Sig=bspd_current_high unsigned 1
+Sig=bspd_brake_high unsigned 1
+Sig=no_accel_or_brake_implausibility unsigned 1
+Sig=ecu_state unsigned 3 /e:ecu_stateE
+Sig=inverter_error unsigned 1
+Sig=energy_meter_present unsigned 1
+Sig=software_ok unsigned 1
+Sig=launch_control_active unsigned 1
+Sig=pack_charge_critical unsigned 2
+Sig=max_torque unsigned 8
+Sig=torque_mode unsigned 8 // torque mode
+Sig=distance_traveled_m unsigned 16 /f:0.01
+Sig=accel_percent_float unsigned 8 /u:percent /f:0.39215686275 /ln:"acceleration pedal percent travel" // The percentage of accel pedal travel represented by an unsigned float
+Sig=brake_sensor_analog_read unsigned 16 /u:psi /f:3.0517578125 /o:-312.5 /ln:"The brake pressure output in PSI based on datasheet (NOT on calibration)"
+Sig=group_id unsigned 4
+Sig=cell_1_balancing_status unsigned 1
+Sig=cell_2_balancing_status unsigned 1
+Sig=cell_3_balancing_status unsigned 1
+Sig=cell_4_balancing_status unsigned 1
+Sig=cell_5_balancing_status unsigned 1
+Sig=cell_6_balancing_status unsigned 1
+Sig=cell_7_balancing_status unsigned 1
+Sig=cell_8_balancing_status unsigned 1
+Sig=cell_9_balancing_status unsigned 1
+Sig=cell_10_balancing_status unsigned 1
+Sig=cell_11_balancing_status unsigned 1
+Sig=cell_12_balancing_status unsigned 1
+Sig=cell_13_balancing_status unsigned 1
+Sig=cell_14_balancing_status unsigned 1
+Sig=cell_15_balancing_status unsigned 1
+Sig=cell_16_balancing_status unsigned 1
+Sig=cell_17_balancing_status unsigned 1
+Sig=cell_18_balancing_status unsigned 1
+Sig=cell_19_balancing_status unsigned 1
+Sig=cell_20_balancing_status unsigned 1
+Sig=cell_21_balancing_status unsigned 1
+Sig=cell_22_balancing_status unsigned 1
+Sig=cell_23_balancing_status unsigned 1
+Sig=cell_24_balancing_status unsigned 1
+Sig=cell_25_balancing_status unsigned 1
+Sig=cell_26_balancing_status unsigned 1
+Sig=cell_27_balancing_status unsigned 1
+Sig=cell_28_balancing_status unsigned 1
+Sig=cell_29_balancing_status unsigned 1
+Sig=cell_30_balancing_status unsigned 1
+Sig=cell_31_balancing_status unsigned 1
+Sig=cell_32_balancing_status unsigned 1
+Sig=cell_33_balancing_status unsigned 1
+Sig=cell_34_balancing_status unsigned 1
+Sig=cell_35_balancing_status unsigned 1
+Sig=cell_36_balancing_status unsigned 1
+Sig=cell_37_balancing_status unsigned 1
+Sig=cell_38_balancing_status unsigned 1
+Sig=cell_39_balancing_status unsigned 1
+Sig=cell_40_balancing_status unsigned 1
+Sig=cell_41_balancing_status unsigned 1
+Sig=cell_42_balancing_status unsigned 1
+Sig=cell_43_balancing_status unsigned 1
+Sig=cell_44_balancing_status unsigned 1
+Sig=cell_45_balancing_status unsigned 1
+Sig=cell_46_balancing_status unsigned 1
+Sig=cell_47_balancing_status unsigned 1
+Sig=cell_48_balancing_status unsigned 1
+Sig=cell_49_balancing_status unsigned 1
+Sig=cell_50_balancing_status unsigned 1
+Sig=cell_51_balancing_status unsigned 1
+Sig=cell_52_balancing_status unsigned 1
+Sig=cell_53_balancing_status unsigned 1
+Sig=cell_54_balancing_status unsigned 1
+Sig=cell_55_balancing_status unsigned 1
+Sig=cell_56_balancing_status unsigned 1
+Sig=cell_57_balancing_status unsigned 1
+Sig=cell_58_balancing_status unsigned 1
+Sig=cell_59_balancing_status unsigned 1
+Sig=cell_60_balancing_status unsigned 1
+Sig=potentiometer_fl unsigned 16 /u:lbs /ln:"Front Left Potentiometer"
+Sig=potentiometer_fr unsigned 16 /u:lbs /ln:"Front Right Potentiometer"
+Sig=steering_1 signed 16
+Sig=steering_2 unsigned 16
+Sig=hall_effect_current signed 16 /u:N/A
+Sig=glv_battery_voltage unsigned 16
+Sig=average_temp signed 16 /u:"Deg C" /f:0.01
+Sig=low_temp signed 16 /f:0.01
+Sig=high_temp signed 16 /u:"deg C" /f:0.01
+Sig=ic_id unsigned 4
+Sig=temp_0 signed 16 /u:"Deg C" /f:0.01
+Sig=temp_1 signed 16 /u:"Deg C" /f:0.01
+Sig=average_voltage unsigned 16 /u:V /f:0.0001
+Sig=low_voltage unsigned 16 /f:0.0001
+Sig=high_voltage unsigned 16 /u:V /f:0.0001
+Sig=total_voltage unsigned 16 /f:0.01
+Sig=voltage_0 unsigned 16 /f:0.0001
+Sig=voltage_1 unsigned 16 /f:0.0001
+Sig=voltage_2 unsigned 16 /f:0.0001
+Sig=thermistor_id_0 signed 16 /f:0.01
+Sig=thermistor_id_1 signed 16 /f:0.01
+Sig=thermistor_id_2 signed 16 /f:0.01
+Sig=state unsigned 8
+Sig=overvoltage_error unsigned 1 /u:none /ln:"overvoltage_error" // Whether or not the energy meter is reading an over-voltage error.
+Sig=undervoltage_error unsigned 1
+Sig=total_voltage_high_error unsigned 1
+Sig=discharge_overcurrent_error unsigned 1
+Sig=charge_overcurrent_error unsigned 1
+Sig=discharge_overtemp_error unsigned 1
+Sig=charge_overtemp_error unsigned 1
+Sig=undertemp_error unsigned 1
+Sig=overtemp_error unsigned 1
+Sig=current signed 16 /f:0.01
+Sig=shutdown_g_above_threshold_error unsigned 1
+Sig=shutdown_h_above_threshold_error unsigned 1
+Sig=charger_enabled unsigned 1
+Sig=total_charge unsigned 32 /u:Coulombs /f:0.0001 // UNUSED SIGNAL. See legacy AMS firmware (code-2024) for usage.
+Sig=total_discharge unsigned 32 /u:Coulombs /f:0.0001 // UNUSED SIGNAL. See legacy AMS firmware (code-2024) for usage.
+Sig=start_button unsigned 1
+Sig=drive_buzzer unsigned 1
+Sig=ssok_above_threshold unsigned 1
+Sig=shutdown_h_above_threshold unsigned 1
+Sig=mark_button unsigned 1
+Sig=mode_button unsigned 1
+Sig=motor_controller_cycle_button unsigned 1
+Sig=launch_ctrl_button unsigned 1
+Sig=torque_mode_button unsigned 1
+Sig=led_dimmer_button unsigned 1
+Sig=dial_state unsigned 8 /e:dial_stateE
+Sig=ams_led unsigned 2
+Sig=imd_led unsigned 2
+Sig=mode_led unsigned 2
+Sig=motor_controller_error_led unsigned 2
+Sig=start_status_led unsigned 2
+Sig=inertia_status_led unsigned 2
+Sig=mechanical_brake_led unsigned 2
+Sig=gen_purp_led unsigned 2
+Sig=bots_led unsigned 2
+Sig=cockpit_brb_led unsigned 2
+Sig=pack_charge_led unsigned 8 // pack charge led has a value from 0 to 255 representing a percentage that can be displayed on dashboard as a gradient between two colors
+Sig=glv_led unsigned 8 // glv led has a value from 0 to 255 representing a percentage that can be displayed on dashboard as a gradient between two colors
+Sig=launch_control_led unsigned 2
+Sig=max_charging_voltage_high unsigned 8 // Unused for any PCAN stuff only for Elcon Charger
+Sig=max_charging_voltage_low unsigned 8 // Unused for any PCAN stuff only for Elcon Charger
+Sig=max_charging_current_high unsigned 8 // Unused for any PCAN stuff only for Elcon Charger
+Sig=max_charging_current_low unsigned 8 // Unused for any PCAN stuff only for Elcon Charger
+Sig=control unsigned 8
+Sig=output_dc_voltage_high unsigned 8
+Sig=output_dc_voltage_low unsigned 8
+Sig=output_current_high unsigned 8
+Sig=output_current_low unsigned 8
+Sig=flags unsigned 8
+Sig=input_ac_voltage_high unsigned 8
+Sig=input_ac_voltage_low unsigned 8
+Sig=voltage_gain unsigned 4 /u:none /ln:"voltage_gain_mode" // This selects the "gain" mode for the EM voltage measurements. The specific multipliers for each gain mode are configured with the EMD Tool.
+Sig=current_gain unsigned 4 /u:none /ln:"current_gain_mode" // This selects the "gain" mode for the EM current measurements. The specific multipliers for each gain mode are configured with the EMD Tool.
+Sig=overpower_error unsigned 1 /u:none /ln:"overpower_error" // Whether or not the Energy Meter is reading an over-power error.
+Sig=logging unsigned 1 /u:none /ln:"energy_meter_is_logging" // Whether or not the energy meter is currently logging data.
+Sig=best_lap_time unsigned 24 /u:ms
+Sig=prev_lap_time unsigned 24 /u:ms /ln:"previous_lap_time"
+Sig=lap_clock_state unsigned 8
+Sig=target_lap_time unsigned 24 /u:ms // target lap time is the time determined by the pit crew that the driver should aim for. mostly useful for guiding the driver in endurance races.
+Sig=driver_message unsigned 8 // corresponds to a pre-set list of driver messages on the dashboard that the TCU can request to be displayed in event of comms failure
+Sig=left_shifter_button unsigned 1
+Sig=right_shifter_button unsigned 1
+Sig=load_cell_fl unsigned 16 /u:lbs /ln:"Front Left Load Cell"
+Sig=load_cell_fr unsigned 16 /u:lbs /ln:"Front Right Load Cell"
+Sig=load_cell_rl unsigned 16 /u:lbs /ln:"Rear Left Load Cell"
+Sig=load_cell_rr unsigned 16 /u:lbs /ln:"Rear Right Load Cell"
+Sig=em_voltage signed 32 -m /u:Volts /f:1.52590219E-005 /e:steering_system_statusE /ln:"energy_meter_voltage" // The voltage, in Volts, measured by the Energy Meter.
+Sig=em_current signed 32 -m /u:Coulombs /f:1.52590219E-005 /ln:"energy_meter_current_amps" // The current draw, in amps, measured by the Energy Meter.
+Sig=RR_TTPMS_TC unsigned 16 -m
+Sig=RR_TTPMS_RSSI signed 16 -m /u:dBm
+Sig=RR_TTPMS_T unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_NODE_ID unsigned 16 -m
+Sig=RR_TTPMS_T13 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T14 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T15 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T16 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T9 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T10 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T11 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T12 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T5 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T6 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T7 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T8 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T1 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T2 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T3 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_T4 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RR_TTPMS_SN unsigned 16 -m
+Sig=RR_TTPMS_BAT_V unsigned 16 -m /u:mV
+Sig=RR_TTPMS_P unsigned 16 -m /u:mbar
+Sig=RR_TTPMS_P_GAUGE unsigned 16 -m /u:mbar
+Sig=LR_TTPMS_TC unsigned 16 -m
+Sig=LR_TTPMS_RSSI signed 16 -m /u:dBm
+Sig=LR_TTPMS_T unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_NODE_ID unsigned 16 -m
+Sig=LR_TTPMS_T13 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T14 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T15 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T16 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T9 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T10 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T11 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T12 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T5 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T6 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T7 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T8 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T1 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T2 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T3 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_T4 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LR_TTPMS_SN unsigned 16 -m // Serial Number
+Sig=LR_TTPMS_BAT_V unsigned 16 -m /u:mV
+Sig=LR_TTPMS_P unsigned 16 -m /u:mbar
+Sig=LR_TTPMS_P_GAUGE unsigned 16 -m /u:mbar
+Sig=RF_TTPMS_TC unsigned 16 -m
+Sig=RF_TTPMS_RSSI signed 16 -m /u:dBm
+Sig=RF_TTPMS_T unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_NODE_ID unsigned 16 -m
+Sig=RF_TTPMS_T13 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T14 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T15 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T16 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T9 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T10 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T11 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T12 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T5 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T6 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T7 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T8 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T1 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T2 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T3 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_T4 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=RF_TTPMS_SN unsigned 16 -m
+Sig=RF_TTPMS_BAT_V unsigned 16 -m /u:mV
+Sig=RF_TTPMS_P unsigned 16 -m /u:mbar
+Sig=RF_TTPMS_P_GAUGE unsigned 16 -m /u:mbar
+Sig=LF_TTPMS_TC unsigned 16 -m
+Sig=LF_TTPMS_RSSI signed 16 -m /u:dBm
+Sig=LF_TTPMS_T unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_NODE_ID unsigned 16 -m
+Sig=LF_TTPMS_T13 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T14 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T15 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T16 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T9 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T10 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T11 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T12 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T5 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T6 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T7 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T8 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T1 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T2 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T3 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_T4 unsigned 16 -m /u:°C /f:0.1 /o:-100
+Sig=LF_TTPMS_SN unsigned 16 -m
+Sig=LF_TTPMS_BAT_V unsigned 16 -m /u:mV
+Sig=LF_TTPMS_P unsigned 16 -m /u:mbar
+Sig=LF_TTPMS_P_GAUGE unsigned 16 -m /u:mbar
+Sig=current_shunt_read unsigned 16 /u:amps /f:0.291373985492 /o:-666 // The shunt in penthouse; Measures current that goes through the whole tractive system -- used for coulumb counting
+Sig=pack_filtered_read unsigned 16 /u:volts /f:0.16869351172632 // Filtered pack voltage
+Sig=ts_out_filtered_read unsigned 16 /u:volts /f:0.169047463702246 // Voltage across tractive system
+Sig=charge_coulombs unsigned 32 -m /u:Coulombs /f:0.0001 /ln:"accumulator_charge_coulombs" // The charge in the accumulator, in Coulombs
+Sig=charge_percentage unsigned 16 -m /u:percent /f:0.01 /ln:"accumulator_charge_percentage" // The charge in the accumulator, as a percentage.
+Sig=min_cell_voltage_est unsigned 16 /u:volts /f:0.0001 /ln:"min_cell_voltage_estimation_from_state_of_charge" // Lowest-cell-voltage estimate based on the state of charge, according to VOLTAGE_LOOKUP_TABLE. Ex: 87% SoC would display 3.798V.
+Sig=hall_curr_signal unsigned 16 /u:mV
+Sig=hall_curr_ref unsigned 16 /u:mV
+Sig=fl_motor_rpm signed 16
+Sig=lf_motor_rpm signed 16
+Sig=fr_motor_rpm signed 16
+Sig=rl_motor_rpm signed 16
+Sig=rr_motor_rpm signed 16
+Sig=mc1_diagnostic_number unsigned 16
+Sig=mc2_diagnostic_number unsigned 16
+Sig=mc3_diagnostic_number unsigned 16
+Sig=mc4_diagnostic_number unsigned 16
+Sig=mc1_dc_on unsigned 1
+Sig=mc1_derating_on unsigned 1
+Sig=mc1_error unsigned 1
+Sig=mc1_inverter_on unsigned 1
+Sig=mc1_quit_dc unsigned 1
+Sig=mc1_quit_inverter_on unsigned 1
+Sig=mc1_system_ready unsigned 1
+Sig=mc1_warning unsigned 1
+Sig=mc2_dc_on unsigned 1
+Sig=mc2_derating_on unsigned 1
+Sig=mc2_error unsigned 1
+Sig=mc2_inverter_on unsigned 1
+Sig=mc2_quit_dc unsigned 1
+Sig=mc2_quit_inverter_on unsigned 1
+Sig=mc2_system_ready unsigned 1
+Sig=mc2_warning unsigned 1
+Sig=mc3_dc_on unsigned 1
+Sig=mc3_derating_on unsigned 1
+Sig=mc3_error unsigned 1
+Sig=mc3_inverter_on unsigned 1
+Sig=mc3_quit_dc unsigned 1
+Sig=mc3_quit_inverter_on unsigned 1
+Sig=mc3_system_ready unsigned 1
+Sig=mc3_warning unsigned 1
+Sig=mc4_dc_on unsigned 1
+Sig=mc4_derating_on unsigned 1
+Sig=mc4_error unsigned 1
+Sig=mc4_inverter_on unsigned 1
+Sig=mc4_quit_dc unsigned 1
+Sig=mc4_quit_inverter_on unsigned 1
+Sig=mc4_system_ready unsigned 1
+Sig=mc4_warning unsigned 1
+Sig=accel_implausible bit
+Sig=brake_implausible bit
+Sig=accel_percent unsigned 8 /max:100
+Sig=brake_percent unsigned 8 /max:100
+Sig=thermistor_inv1 unsigned 16 /u:"deg C" /f:0.005 // inverter cooling loop temp
+Sig=thermistor_inv2 unsigned 16 /u:"deg C" /f:0.005 // invertor cooling loop tmep
+Sig=thermistor_acc1 unsigned 16 /u:"deg C" /f:0.005 // acculum cooling loop temp
+Sig=thermistor_acc2 unsigned 16 /u:"deg C" /f:0.005 // acculum cooling loop temp
+Sig=thermistor_motor_rl unsigned 16 /u:"deg C" /f:0.005 // Motor cooling loop temperature
+Sig=thermistor_motor_rr unsigned 16 /u:"deg C" /f:0.005 // Motor cooling loop temperature
+Sig=thermistor_pump unsigned 16 /u:"deg C" /f:0.005 // temp of the pump
+Sig=shutdown_status unsigned 16
+Sig=vn_yaw signed 16 /u:deg /f:0.01
+Sig=vn_pitch signed 16 /u:deg /f:0.01
+Sig=vn_roll signed 16 /u:deg /f:0.01
+Sig=vn_lin_ins_accel_x signed 16 /u:m/s^2 /f:0.001 // estimated acceleration of INS
+Sig=vn_lin_ins_accel_y signed 16 /u:m/s^2 /f:0.001 // estimated acceleration of INS
+Sig=vn_lin_ins_accel_z signed 16 /u:m/s^2 /f:0.001 // estimated acceleration of INS
+Sig=vn_lin_uncomp_accel_x signed 16 /u:m/s^2 /f:0.001 // IMU acceleration
+Sig=vn_lin_uncomp_accel_y signed 16 /u:m/s^2 /f:0.001 // IMU acceleration
+Sig=vn_lin_uncomp_accel_z signed 16 /u:m/s^2 /f:0.001 // IMU acceleration
+Sig=vn_body_vel_x signed 16 /u:m/s /f:0.002
+Sig=vn_body_vel_y signed 16 /u:m/s /f:0.002
+Sig=vn_body_vel_z signed 16 /u:m/s /f:0.002
+Sig=vn_gps_lat signed 32 /u:deg /f:1E-006
+Sig=vn_gps_lon signed 32 /u:deg /f:1E-006
+Sig=vn_gps_alt signed 16 /u:deg /f:0.001
+Sig=vn_gps_time unsigned 64 /u:ns // time since start of epoch 1980
+Sig=vn_gps_status unsigned 16 /e:vn_gps_fixE // GPS fix status
+Sig=fr_motor_torque signed 16 /u:nm
+Sig=fl_motor_torque signed 16 /u:nm
+Sig=rr_motor_torque signed 16 /u:nm
+Sig=rl_motor_torque signed 16 /u:nm
+Sig=potentiometer_rl unsigned 16 /u:lbs /ln:"Rear Left Potentiometer"
+Sig=potentiometer_rr unsigned 16 /u:lbs /ln:"Rear Right Potentiometer"
+Sig=tcu_recording_state unsigned 2 // The current state of TCU data recording (off, requested,on,saving)
+Sig=brake_percent_float unsigned 8 /u:percent /f:0.39215686275 /ln:"acceleration pedal percent travel" // The percentage of accel pedal travel represented by an unsigned float
+Sig=mechanical_brake_percent_float unsigned 8 /u:percent /f:0.39215686275 // The percentage at which mechanical brake activates represented by an unsigned float
+Sig=angular_rate_x signed 16 /u:rad/s /f:0.001
+Sig=angular_rate_y signed 16 /u:rad/s /f:0.001
+Sig=angular_rate_z signed 16 /u:rad/s /f:0.001
+Sig=vn_ecef_pos_x signed 32 /u:m /f:0.005 // earth centered earth fixed
+Sig=vn_ecef_pos_y signed 32 /u:m /f:0.005 // earth centered earth fixed
+Sig=vn_ecef_pos_z signed 32 /u:m /f:0.005 // earth centered earth fixed
+Sig=accel_1_raw unsigned 12
+Sig=accel_2_raw unsigned 12
+Sig=brake_1_raw unsigned 12
+Sig=brake_2_raw unsigned 12
+Sig=controller_input signed 20 /f:0.01
+Sig=controller_output signed 20 /f:0.01
+Sig=pid_tv_fl_delta signed 10 /f:0.1
+Sig=pid_tv_fr_delta signed 10 /f:0.1
+Sig=pid_tv_rl_delta signed 10 /f:0.1
+Sig=pid_tv_rr_delta signed 10 /f:0.1
+Sig=torque_request signed 16 /f:0.001 /ln:"acceleration torque request" // The torque request calculated from the accelleration request and the maximum torque
+Sig=front_torque_scale signed 8 /f:0.00787402 /ln:"front_torque_scale" // the front/rear torque scaling
+Sig=accel_request_state unsigned 1 /ln:"acceleration_request_state" // The current state of the acceleration request (0 = decelerating, 1 = accelerating)
+Sig=rear_torque_scale signed 8 /f:0.00787402 /ln:"rear_torque_scale" // the front/rear torque scaling
+Sig=front_regen_scale signed 8 /f:0.00787402 /ln:"front_regen_torque_scale" // the front/rear torque scaling
+Sig=rear_regen_scale signed 8 /f:0.00787402 /ln:"rear_regen_torque_scale" // the front/rear torque scaling
+Sig=launch_control_state unsigned 2 // The current state of the launch controller (LAUNCH_NOT_READY, LAUNCH_READY, LAUNCHING)
+Sig=initial_launch_target unsigned 16 /u:rpm // The initial launch speed target requested by the launch controller
+Sig=algo_active unsigned 1 /ln:"launch_algorithm_active" // State of whether the launch algorithm has taken over control from the initial launch target
+Sig=vehm_alpha_deg_fl signed 16 /u:deg /f:0.001
+Sig=vehm_alpha_deg_fr signed 16 /u:deg /f:0.001
+Sig=vehm_alpha_deg_rl signed 16 /u:deg /f:0.001
+Sig=vehm_alpha_deg_rr signed 16 /u:deg /f:0.001
+Sig=vehm_beta_deg signed 16 /u:deg /f:0.001
+Sig=vehm_long_corner_vel_fl signed 16 /u:m/s /f:0.01
+Sig=vehm_long_corner_vel_fr signed 16 /u:m/s /f:0.01
+Sig=vehm_long_corner_vel_rl signed 16 /u:m/s /f:0.01
+Sig=vehm_long_corner_vel_rr signed 16 /u:m/s /f:0.01
+Sig=vehm_kin_desired_yaw_rate_rad_s signed 16 /u:rad/s /f:0.0001
+Sig=vehm_sl_fl signed 16 /f:0.0001
+Sig=vehm_sl_fr signed 16 /f:0.0001
+Sig=vehm_sl_rl signed 16 /f:0.0001
+Sig=vehm_sl_rr signed 16 /f:0.0001
+Sig=vehm_wheel_steer_avg_deg signed 16 /u:deg /f:0.001
+Sig=vehm_steering_wheel_angle_deg signed 16 /u:deg /f:0.001
+Sig=controller_initial_torque_req signed 16 /u:Nm /f:0.001
+Sig=controller_yaw_rate_error signed 16 /u:rad/s /f:0.0001
+Sig=controller_yaw_torque_fl signed 16 /u:Nm /f:0.001
+Sig=controller_yaw_torque_fr signed 16 /u:Nm /f:0.001
+Sig=controller_yaw_torque_rl signed 16 /u:Nm /f:0.001
+Sig=controller_yaw_torque_rr signed 16 /u:Nm /f:0.001
+Sig=controller_normal_percent_fl signed 16 /f:0.0001
+Sig=controller_normal_percent_fr signed 16 /f:0.0001
+Sig=controller_normal_percent_rl signed 16 /f:0.0001
+Sig=controller_normal_percent_rr signed 16 /f:0.0001
+Sig=controller_normal_torque_fl signed 16 /u:Nm /f:0.001
+Sig=controller_normal_torque_fr signed 16 /u:Nm /f:0.001
+Sig=controller_normal_torque_rl signed 16 /u:Nm /f:0.001
+Sig=controller_normal_torque_rr signed 16 /u:Nm /f:0.001
+Sig=controller_power_lim_status unsigned 4
+Sig=controller_power_lim_error signed 16 /f:0.001
+Sig=controller_power_lim_torque_adj signed 16 /u:Nm /f:0.001
+Sig=controller_power_lim_cornerp_fl signed 16 /u:kW /f:0.01
+Sig=controller_power_lim_cornerp_fr signed 16 /u:kW /f:0.01
+Sig=controller_power_lim_cornerp_rl signed 16 /u:kW /f:0.01
+Sig=controller_power_lim_cornerp_rr signed 16 /u:kW /f:0.01
+Sig=controller_power_lim_torque_fl signed 16 /u:Nm /f:0.001
+Sig=controller_power_lim_torque_fr signed 16 /u:Nm /f:0.001
+Sig=controller_power_lim_torque_rl signed 16 /u:Nm /f:0.001
+Sig=controller_power_lim_torque_rr signed 16 /u:Nm /f:0.001
+Sig=controller_yaw_pid_output signed 16 /u:Nm /f:0.001
+Sig=controller_use_pid_tv unsigned 1
+Sig=controller_use_launch unsigned 1
+Sig=controller_use_normal_force unsigned 1
+Sig=controller_use_power_limit unsigned 1
+Sig=controller_use_pid_power_limit unsigned 1
+Sig=controller_use_tcs unsigned 1
+Sig=controller_tcs_launch_dead_zone unsigned 8 /u:Nm /f:0.1
+Sig=controller_tcs_torque_fl signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_torque_fr signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_torque_rl signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_torque_rr signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_status_fl unsigned 2
+Sig=controller_tcs_status_fr unsigned 2
+Sig=controller_tcs_status_rl unsigned 2
+Sig=controller_tcs_status_rr unsigned 2
+Sig=controller_tcs_pid_input_fl signed 16 /u:Nm /f:0.0001
+Sig=controller_tcs_pid_input_fr signed 16 /u:Nm /f:0.0001
+Sig=controller_tcs_pid_input_rl signed 16 /u:Nm /f:0.0001
+Sig=controller_tcs_pid_input_rr signed 16 /u:Nm /f:0.0001
+Sig=controller_tcs_pid_output_fl signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_pid_output_fr signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_pid_output_rl signed 16 /u:Nm /f:0.001
+Sig=controller_tcs_pid_output_rr signed 16 /u:Nm /f:0.001
+Sig=drive_mode unsigned 4 /ln:"ECU_drive_mode" // The current drive mode on the ECU irrespective of dial mapping
+Sig=controller_use_tcs_lim_yaw_pid unsigned 1
+Sig=controller_constrained_torq_req signed 16 /u:Nm /f:0.001
+Sig=controller_torque_mode unsigned 8 /u:Nm /f:0.1
+Sig=controller_regen_limit signed 12 /u:Nm /f:0.01
+Sig=controller_use_dec_yaw_pid_brake unsigned 1
+Sig=controller_use_discontin_brakes unsigned 1
+Sig=vehm_wheel_lin_vel_fl signed 16 /u:m/s /f:0.01
+Sig=vehm_wheel_lin_vel_fr signed 16 /u:m/s /f:0.01
+Sig=vehm_wheel_lin_vel_rl signed 16 /u:m/s /f:0.01
+Sig=vehm_wheel_lin_vel_rr signed 16 /u:m/s /f:0.01
+Sig=controller_use_no_regen_5kph unsigned 1
+Sig=controller_use_torque_bias unsigned 1
+Sig=controller_bias_torq_avg_front signed 16 /u:Nm /f:0.001
+Sig=controller_bias_torq_avg_rear signed 16 /u:Nm /f:0.001
+Sig=controller_regen_5kph_torq_fl signed 16 /u:Nm /f:0.001
+Sig=controller_regen_5kph_torq_fr signed 16 /u:Nm /f:0.001
+Sig=controller_regen_5kph_torq_rl signed 16 /u:Nm /f:0.001
+Sig=controller_regen_5kph_torq_rr signed 16 /u:Nm /f:0.001
+Sig=controller_regen_5kph_status_fl unsigned 1
+Sig=controller_regen_5kph_status_fr unsigned 1
+Sig=controller_regen_5kph_status_rl unsigned 1
+Sig=controller_regen_5kph_status_rr unsigned 1
+Sig=controller_tcs_pid_p_fl unsigned 16 /f:0.001
+Sig=controller_tcs_pid_p_fr unsigned 16 /f:0.001
+Sig=controller_tcs_pid_p_rl unsigned 16 /f:0.001
+Sig=controller_tcs_pid_p_rr unsigned 16 /f:0.001
+Sig=controller_yaw_pid_p unsigned 13 /f:0.001
+Sig=controller_yaw_pid_i unsigned 10 /f:0.001
+Sig=controller_yaw_pid_d unsigned 10 /f:0.001
+Sig=controller_yaw_pid_brakes_p unsigned 11 /f:0.001
+Sig=controller_yaw_pid_brakes_i unsigned 10 /f:0.001
+Sig=controller_yaw_pid_brakes_d unsigned 10 /f:0.001
+Sig=controller_max_nl_brake_sc_front unsigned 8 /f:0.01
+Sig=controller_tcs_launch_vel_thresh unsigned 6 /u:m/s /f:0.01
+Sig=controller_tcs_vel_thresh unsigned 8 /u:m/s /f:0.01
+Sig=thermistor_motor_fl unsigned 16 /u:"deg C" /f:0.005 // Motor cooling loop temperature
+Sig=thermistor_motor_fr unsigned 16 /u:"deg C" /f:0.005 // Motor cooling loop temperature
+Sig=controller_tcs_saturation_front unsigned 12 /u:Nm /f:0.01
+Sig=controller_tcs_saturation_rear unsigned 12 /u:Nm /f:0.01
+Sig=controller_tcs_gen_LRdiff_lowerB unsigned 13 /u:Nm /f:0.01
+Sig=controller_tcs_gen_LRdiff_upperB unsigned 14 /u:Nm /f:0.01
+Sig=controller_tcs_w_steer_lower_b unsigned 12 /u:deg /f:0.01
+Sig=controller_tcs_w_steer_upper_b unsigned 12 /u:deg /f:0.01
+Sig=controller_tcs_launch_LRdiff unsigned 13 /u:Nm /f:0.01
+Sig=torque_controller_mux_status tc_mux_status 3
+Sig=steering_system_status unsigned 2 /e:steering_system_statusE // 0 : nominal; 1 : marginal; 2 : degraded; 3 : error
+Sig=steering_encoder_status unsigned 2 /e:steering_encoder_statusE // 0 : nominal; 1 : marginal; 2 : error
+Sig=steering_analog_status steering_analog_statusE 1 // 0 : good; 1 : clamped
+Sig=steering_system_angle signed 16 /u:deg /f:0.01 // Angle reported by steering system
+Sig=controller_use_rpm_tcs_gain_sche unsigned 1
+Sig=controller_use_nl_tcs_gain_sche unsigned 1
+Sig=controller_tcs_lower_rpm_front unsigned 15 /u:RPM
+Sig=controller_tcs_lower_rpm_rear unsigned 15 /u:RPM
+Sig=controller_tcs_upper_rpm_front unsigned 15 /u:RPM
+Sig=controller_tcs_upper_rpm_rear unsigned 15 /u:RPM
+Sig=controller_tcs_startper_nl_front unsigned 8 /f:0.01
+Sig=controller_tcs_startper_nl_rear unsigned 8 /f:0.01
+Sig=controller_tcs_endper_nl_front unsigned 8 /f:0.01
+Sig=controller_tcs_endper_nl_rear unsigned 8 /f:0.01
+Sig=controller_use_nl_tcs_slipschedu unsigned 1
+Sig=controller_tcs_lauSL_start_front unsigned 8 /f:0.01
+Sig=controller_tcs_lauSL_end_front unsigned 8 /f:0.01
+Sig=controller_tcs_lauSL_start_rear unsigned 8 /f:0.01
+Sig=controller_tcs_lauSL_end_rear unsigned 8 /f:0.01
+Sig=controller_tcs_SL_start_front unsigned 8 /f:0.01
+Sig=controller_tcs_SL_end_front unsigned 8 /f:0.01
+Sig=controller_tcs_SL_start_rear unsigned 8 /f:0.01
+Sig=controller_tcs_SL_end_rear unsigned 8 /f:0.01
+Sig=controller_tcs_sl_nlperc_star_fr unsigned 8 /f:0.01
+Sig=controller_tcs_sl_nlperc_end_fr unsigned 8 /f:0.01
+Sig=controller_tcs_sl_nlperc_star_rr unsigned 8 /f:0.01
+Sig=controller_tcs_sl_nlperc_end_rr unsigned 8 /f:0.01
+Sig=controller_tcs_slip_target_front unsigned 12 /f:0.001
+Sig=controller_tcs_slip_target_rear unsigned 12 /f:0.001
+Sig=steering_encoder_angle signed 16 /u:deg /f:0.01 // Angle measured by upper steering encoder
+Sig=steering_analog_angle signed 16 /f:0.01 // Angle measured by bottom steering analog sensor
+Sig=speed_above_thresh unsigned 1 // Vehicle speed is above 5 m/s, TCMux does not allow driver to switch mode
+Sig=torque_delta_above_thresh unsigned 1 // Torque delta between old and new controllers is < 0.5Nm on every wheel
+Sig=tc_not_ready unsigned 1 // Selected TC not in ready state
+Sig=steering_system_has_err unsigned 1 // Steering system data in ERROR state
+Sig=dash_dial_mode unsigned 8 // Dashboard dial position
+Sig=mode_intended unsigned 8 // TC mode selected by driver
+Sig=mode_actual unsigned 8 // actual mode in tcmux
+Sig=torque_limit unsigned 16 /f:0.001 // AMK inverter torque limit in use
+Sig=num_sats_pvt_1 unsigned 8 // num of common satelites that are used in the PVT solution on receiver A
+Sig=num_sats_rtk_1 unsigned 8 // num of common satelites that are used in the RTK solution on receiver A
+Sig=highest_cn0_1 unsigned 8 /u:dBHz /f:0.5 // Highest CN0 reported on receiver A
+Sig=num_sats_pvt_2 unsigned 8 // num of common satelites that are used in the PVT solution on receiver B
+Sig=num_sats_rtk_2 unsigned 8 // num of common satelites that are used in the RTK solution on receiver B
+Sig=num_com_sats_pvt unsigned 8 // num of common satelites that are used in the PVT solution on both receivers
+Sig=num_com_sats_rtk unsigned 8 // num of common satelites that are used in the RTK solution on both receivers
+Sig=highest_cn0_2 unsigned 8 /u:dBHz /f:0.5 // Highest CN0 reported on receiver B
+Sig=controller_max_yaw_nl_accel_perc unsigned 4 /f:0.1
+Sig=vn_vel_uncertainty unsigned 16 /u:m/s /f:0.0005 // how much error there might be
+Sig=drivetrain_traj_torque_lim_fl signed 16 /f:0.001
+Sig=drivetrain_traj_torque_lim_fr signed 16 /f:0.001
+Sig=drivetrain_traj_torque_lim_rl signed 16 /f:0.001
+Sig=drivetrain_traj_torque_lim_rr signed 16 /f:0.001
+Sig=drivebrain_torque_fl signed 16 /f:0.01
+Sig=drivebrain_torque_fr signed 16 /f:0.01
+Sig=drivebrain_torque_rl signed 16 /f:0.01
+Sig=drivebrain_torque_rr signed 16 /f:0.01
+Sig=drivebrain_set_rpm_fl unsigned 16
+Sig=drivebrain_set_rpm_fr unsigned 16
+Sig=drivebrain_set_rpm_rl unsigned 16
+Sig=drivebrain_set_rpm_rr unsigned 16
+Sig=izze_brake_IR_temp_1 unsigned 16 -m
+Sig=izze_brake_IR_temp_2 unsigned 16 -m
+Sig=izze_brake_IR_temp_3 unsigned 16 -m
+Sig=izze_brake_IR_temp_4 unsigned 16 -m
+Sig=actual_power_w unsigned 32
+Sig=actual_torque_nm signed 16
+Sig=actual_speed_rpm unsigned 16
+Sig=active_power_w signed 32
+Sig=reactive_power_var signed 32
+Sig=speed_control_kp unsigned 16
+Sig=speed_control_ki unsigned 16
+Sig=speed_control_kd unsigned 16
+
+{SENDRECEIVE}
+
+[BMS_BALANCING_STATUS]
+ID=0DEh
+Len=8
+Sig=group_id 0
+Sig=cell_1_balancing_status 4
+Sig=cell_2_balancing_status 5
+Sig=cell_3_balancing_status 6
+Sig=cell_4_balancing_status 7
+Sig=cell_5_balancing_status 8
+Sig=cell_6_balancing_status 9
+Sig=cell_7_balancing_status 10
+Sig=cell_8_balancing_status 11
+Sig=cell_9_balancing_status 12
+Sig=cell_10_balancing_status 13
+Sig=cell_11_balancing_status 14
+Sig=cell_12_balancing_status 15
+Sig=cell_13_balancing_status 16
+Sig=cell_14_balancing_status 17
+Sig=cell_15_balancing_status 18
+Sig=cell_16_balancing_status 19
+Sig=cell_17_balancing_status 20
+Sig=cell_18_balancing_status 21
+Sig=cell_19_balancing_status 22
+Sig=cell_20_balancing_status 23
+Sig=cell_21_balancing_status 24
+Sig=cell_22_balancing_status 25
+Sig=cell_23_balancing_status 26
+Sig=cell_24_balancing_status 27
+Sig=cell_25_balancing_status 28
+Sig=cell_26_balancing_status 29
+Sig=cell_27_balancing_status 30
+Sig=cell_28_balancing_status 31
+Sig=cell_29_balancing_status 32
+Sig=cell_30_balancing_status 33
+Sig=cell_31_balancing_status 34
+Sig=cell_32_balancing_status 35
+Sig=cell_33_balancing_status 36
+Sig=cell_34_balancing_status 37
+Sig=cell_35_balancing_status 38
+Sig=cell_36_balancing_status 39
+Sig=cell_37_balancing_status 40
+Sig=cell_38_balancing_status 41
+Sig=cell_39_balancing_status 42
+Sig=cell_40_balancing_status 43
+Sig=cell_41_balancing_status 44
+Sig=cell_42_balancing_status 45
+Sig=cell_43_balancing_status 46
+Sig=cell_44_balancing_status 47
+Sig=cell_45_balancing_status 48
+Sig=cell_46_balancing_status 49
+Sig=cell_47_balancing_status 50
+Sig=cell_48_balancing_status 51
+Sig=cell_49_balancing_status 52
+Sig=cell_50_balancing_status 53
+Sig=cell_51_balancing_status 54
+Sig=cell_52_balancing_status 55
+Sig=cell_53_balancing_status 56
+Sig=cell_54_balancing_status 57
+Sig=cell_55_balancing_status 58
+Sig=cell_56_balancing_status 59
+Sig=cell_57_balancing_status 60
+Sig=cell_58_balancing_status 61
+Sig=cell_59_balancing_status 62
+Sig=cell_60_balancing_status 63
+
+[BMS_COULOMB_COUNTS]
+ID=0E2h // UNUSED message to send data on the BMS current draw.
+Len=8
+Sig=total_charge 0
+Sig=total_discharge 32
+
+[BMS_DETAILED_TEMPS]
+ID=0DAh
+Len=7
+Sig=group_id 0
+Sig=ic_id 4
+Sig=thermistor_id_0 8
+Sig=thermistor_id_1 24
+Sig=thermistor_id_2 40
+
+[BMS_DETAILED_VOLTAGES]
+ID=0D8h
+Len=7
+Sig=group_id 0
+Sig=ic_id 4
+Sig=voltage_0 8
+Sig=voltage_1 24
+Sig=voltage_2 40
+
+[BMS_ONBOARD_DETAILED_TEMPS]
+ID=0D6h
+Len=5
+Sig=ic_id 0
+Sig=temp_0 8
+Sig=temp_1 24
+
+[BMS_ONBOARD_TEMPS]
+ID=0D5h
+Len=6
+Sig=average_temp 0
+Sig=low_temp 16
+Sig=high_temp 32
+
+[BMS_STATUS]
+ID=0DBh
+Len=6
+Sig=state 0
+Sig=overvoltage_error 8
+Sig=undervoltage_error 9
+Sig=total_voltage_high_error 10
+Sig=discharge_overcurrent_error 11
+Sig=charge_overcurrent_error 12
+Sig=discharge_overtemp_error 13
+Sig=charge_overtemp_error 14
+Sig=undertemp_error 15
+Sig=overtemp_error 16
+Sig=current 24
+Sig=shutdown_g_above_threshold_error 40
+Sig=shutdown_h_above_threshold_error 41
+
+[BMS_TEMPS]
+ID=0D9h
+Len=6
+Sig=average_temp 0
+Sig=low_temp 16
+Sig=high_temp 32
+
+[BMS_VOLTAGES]
+ID=0D7h
+Len=8
+Sig=average_voltage 0
+Sig=low_voltage 16
+Sig=high_voltage 32
+Sig=total_voltage 48
+
+[CCU_STATUS]
+ID=0DDh
+Len=1
+Sig=charger_enabled 0
+
+[CHARGER_CONTROL]
+ID=1806E5F4h
+Type=Extended
+Len=5
+Sig=max_charging_voltage_high 0
+Sig=max_charging_voltage_low 8
+Sig=max_charging_current_high 16
+Sig=max_charging_current_low 24
+Sig=control 32
+
+[CHARGER_DATA]
+ID=18FF50E5h
+Type=Extended
+Len=7
+Sig=output_dc_voltage_high 0
+Sig=output_dc_voltage_low 8
+Sig=output_current_high 16
+Sig=output_current_low 24
+Sig=flags 32
+Sig=input_ac_voltage_high 40
+Sig=input_ac_voltage_low 48
+
+[EM_MEASUREMENT]
+ID=100h // Contains the voltage and current readings from the Energy Meter. Sent by the AMS.
+Len=8
+Sig=em_voltage 32
+Sig=em_current 0
+
+[EM_STATUS]
+ID=400h // Forwarded directly from the Energy Meter with no modifications. See datasheet for more specifications.
+Len=2
+Sig=voltage_gain 0
+Sig=current_gain 4
+Sig=overvoltage_error 8
+Sig=overpower_error 9
+Sig=logging 10
+
+[MC1_ENERGY]
+ID=0B8h
+Len=8
+Sig=dc_bus_voltage 0
+Sig=motor_power 16
+Sig=feedback_torque 48
+
+[MC1_SETPOINTS_COMMAND]
+ID=0A0h
+Len=8
+Sig=inverter_enable 8
+Sig=hv_enable 9
+Sig=driver_enable 10
+Sig=remove_error 11
+Sig=speed_setpoint_rpm 16
+Sig=positive_torque_limit 32
+Sig=negative_torque_limit 48
+
+[MC1_STATUS]
+ID=0B0h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=speed_rpm 16
+Sig=torque_current 32
+Sig=magnetizing_current 48
+
+[MC1_TEMPS]
+ID=0B4h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=diagnostic_number 32
+Sig=igbt_temp 48
+
+[MC1_TORQUE_COMMAND]
+ID=0A4h
+Len=2
+Sig=torque_command 0
+
+[MC2_ENERGY]
+ID=0B9h
+Len=8
+Sig=dc_bus_voltage 0
+Sig=motor_power 16
+Sig=feedback_torque 48
+
+[MC2_SETPOINTS_COMMAND]
+ID=0A1h
+Len=8
+Sig=inverter_enable 8
+Sig=hv_enable 9
+Sig=driver_enable 10
+Sig=remove_error 11
+Sig=speed_setpoint_rpm 16
+Sig=positive_torque_limit 32
+Sig=negative_torque_limit 48
+
+[MC2_STATUS]
+ID=0B1h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=speed_rpm 16
+Sig=torque_current 32
+Sig=magnetizing_current 48
+
+[MC2_TEMPS]
+ID=0B5h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=diagnostic_number 32
+Sig=igbt_temp 48
+
+[MC2_TORQUE_COMMAND]
+ID=0A5h
+Len=2
+Sig=torque_command 0
+
+[MC3_ENERGY]
+ID=0BAh
+Len=8
+Sig=dc_bus_voltage 0
+Sig=motor_power 16
+Sig=feedback_torque 48
+
+[MC3_SETPOINTS_COMMAND]
+ID=0A2h
+Len=8
+Sig=inverter_enable 8
+Sig=hv_enable 9
+Sig=driver_enable 10
+Sig=remove_error 11
+Sig=speed_setpoint_rpm 16
+Sig=positive_torque_limit 32
+Sig=negative_torque_limit 48
+
+[MC3_STATUS]
+ID=0B2h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=speed_rpm 16
+Sig=torque_current 32
+Sig=magnetizing_current 48
+
+[MC3_TEMPS]
+ID=0B6h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=diagnostic_number 32
+Sig=igbt_temp 48
+
+[MC3_TORQUE_COMMAND]
+ID=0A6h
+Len=2
+Sig=torque_command 0
+
+[MC4_ENERGY]
+ID=0BBh
+Len=8
+Sig=dc_bus_voltage 0
+Sig=motor_power 16
+Sig=feedback_torque 48
+
+[MC4_SETPOINTS_COMMAND]
+ID=0A3h
+Len=8
+Sig=inverter_enable 8
+Sig=hv_enable 9
+Sig=driver_enable 10
+Sig=remove_error 11
+Sig=speed_setpoint_rpm 16
+Sig=positive_torque_limit 32
+Sig=negative_torque_limit 48
+
+[MC4_STATUS]
+ID=0B3h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=speed_rpm 16
+Sig=torque_current 32
+Sig=magnetizing_current 48
+
+[MC4_TEMPS]
+ID=0B7h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=diagnostic_number 32
+Sig=igbt_temp 48
+
+[MC4_TORQUE_COMMAND]
+ID=0A7h
+Len=2
+Sig=torque_command 0
+
+[MCU_ANALOG_READINGS]
+ID=0CCh
+Len=8
+Sig=steering_1 0
+Sig=steering_2 16
+Sig=hall_effect_current 32
+Sig=glv_battery_voltage 48
+
+[MCU_FRONT_POTS]
+ID=0C6h
+Len=4
+Sig=potentiometer_fl 0
+Sig=potentiometer_fr 16
+
+[MCU_LOAD_CELLS]
+ID=0C5h
+Len=4
+Sig=load_cell_fl 0
+Sig=load_cell_fr 16
+
+[MCU_PEDAL_READINGS]
+ID=0C4h
+Len=8
+Sig=accel_percent_float 0
+Sig=brake_percent_float 8
+Sig=mechanical_brake_percent_float 16
+
+[BRAKE_PRESSURE_SENSOR]
+ID=0CBh
+Len=2
+Sig=brake_sensor_analog_read 0
+
+[MCU_REAR_POTS]
+ID=0C7h
+Len=4
+Sig=potentiometer_rl 0
+Sig=potentiometer_rr 16
+
+[MCU_STATUS]
+ID=0C3h
+Len=8
+Sig=imd_ok_high 0
+Sig=shutdown_b_above_threshold 1
+Sig=bms_ok_high 2
+Sig=shutdown_c_above_threshold 3
+Sig=bspd_ok_high 4
+Sig=shutdown_d_above_threshold 5
+Sig=software_ok_high 6
+Sig=shutdown_e_above_threshold 7
+Sig=mechanical_brake_active 8
+Sig=no_accel_implausibility 9
+Sig=no_brake_implausibility 10
+Sig=brake_pedal_active 11
+Sig=bspd_current_high 12
+Sig=bspd_brake_high 13
+Sig=no_accel_or_brake_implausibility 14
+Sig=ecu_state 16
+Sig=inverter_error 19
+Sig=energy_meter_present 20
+Sig=software_ok 22
+Sig=launch_control_active 23
+Sig=pack_charge_critical 24
+Sig=max_torque 32
+Sig=torque_mode 40
+Sig=distance_traveled_m 48
+Sig=drive_buzzer 15
+Sig=drive_mode 28
+
+[DASHBOARD_STATE]
+ID=0ECh
+Len=3
+Sig=start_button 0
+Sig=drive_buzzer 11
+Sig=ssok_above_threshold 10
+Sig=shutdown_h_above_threshold 9
+Sig=mark_button 1
+Sig=mode_button 2
+Sig=motor_controller_cycle_button 3
+Sig=launch_ctrl_button 4
+Sig=torque_mode_button 5
+Sig=led_dimmer_button 6
+Sig=dial_state 16
+Sig=left_shifter_button 7
+Sig=right_shifter_button 8
+Sig=tcu_recording_state 12
+
+[DASHBOARD_MCU_STATE]
+ID=0EBh
+Len=6
+Sig=drive_buzzer 20
+Sig=ams_led 18
+Sig=imd_led 16
+Sig=mode_led 4
+Sig=motor_controller_error_led 14
+Sig=start_status_led 12
+Sig=inertia_status_led 10
+Sig=mechanical_brake_led 6
+Sig=bots_led 0
+Sig=cockpit_brb_led 8
+Sig=pack_charge_led 32
+Sig=glv_led 24
+Sig=launch_control_led 2
+Sig=dial_state 40
+
+[TCU_LAP_TIMES]
+ID=095h // The TCU_LAP_TIMES message contains the best and previous lap times to the dashboard as calculated by the TCU or manually input by the pit crew. It also relays the current state of the TCU's clock to the dashboard so that it can run an approximate stopwatc
+Len=8
+Sig=best_lap_time 0
+Sig=prev_lap_time 24
+Sig=lap_clock_state 48
+
+[TCU_DRIVER_MSG]
+ID=094h // TCU_DRIVER_MSG contains a signal that corresponds to a preset list of messages on the dashboard. It also includes two variables to customize the contents of the message with numerical values. It also includes the target lap time which is determined by the
+Len=8
+Var=driver_msg_var_1 unsigned 8,16 /max:1
+Var=driver_msg_var_2 unsigned 24,16 /max:1
+Sig=driver_message 0
+Sig=target_lap_time 40
+
+[LF_TTPMS_1]
+ID=424h
+Len=8
+Sig=LF_TTPMS_SN 0
+Sig=LF_TTPMS_BAT_V 16
+Sig=LF_TTPMS_P 32
+Sig=LF_TTPMS_P_GAUGE 48
+
+[LF_TTPMS_2]
+ID=425h
+Len=8
+Sig=LF_TTPMS_T1 0
+Sig=LF_TTPMS_T2 16
+Sig=LF_TTPMS_T3 32
+Sig=LF_TTPMS_T4 48
+
+[LF_TTPMS_3]
+ID=426h
+Len=8
+Sig=LF_TTPMS_T5 0
+Sig=LF_TTPMS_T6 16
+Sig=LF_TTPMS_T7 32
+Sig=LF_TTPMS_T8 48
+
+[LF_TTPMS_4]
+ID=427h
+Len=8
+Sig=LF_TTPMS_T9 0
+Sig=LF_TTPMS_T10 16
+Sig=LF_TTPMS_T11 32
+Sig=LF_TTPMS_T12 48
+
+[LF_TTPMS_5]
+ID=428h
+Len=8
+Sig=LF_TTPMS_T13 0
+Sig=LF_TTPMS_T14 16
+Sig=LF_TTPMS_T15 32
+Sig=LF_TTPMS_T16 48
+
+[LF_TTPMS_6]
+ID=429h
+Len=8
+Sig=LF_TTPMS_TC 0
+Sig=LF_TTPMS_RSSI 16
+Sig=LF_TTPMS_T 32
+Sig=LF_TTPMS_NODE_ID 48
+
+[LR_TTPMS_1]
+ID=42Ah
+Len=8
+Sig=LR_TTPMS_SN 0
+Sig=LR_TTPMS_BAT_V 16
+Sig=LR_TTPMS_P 32
+Sig=LR_TTPMS_P_GAUGE 48
+
+[LR_TTPMS_2]
+ID=42Bh
+Len=8
+Sig=LR_TTPMS_T1 0
+Sig=LR_TTPMS_T2 16
+Sig=LR_TTPMS_T3 32
+Sig=LR_TTPMS_T4 48
+
+[LR_TTPMS_3]
+ID=42Ch
+Len=8
+Sig=LR_TTPMS_T5 0
+Sig=LR_TTPMS_T6 16
+Sig=LR_TTPMS_T7 32
+Sig=LR_TTPMS_T8 48
+
+[LR_TTPMS_4]
+ID=42Dh
+Len=8
+Sig=LR_TTPMS_T9 0
+Sig=LR_TTPMS_T10 16
+Sig=LR_TTPMS_T11 32
+Sig=LR_TTPMS_T12 48
+
+[LR_TTPMS_5]
+ID=42Eh
+Len=8
+Sig=LR_TTPMS_T13 0
+Sig=LR_TTPMS_T14 16
+Sig=LR_TTPMS_T15 32
+Sig=LR_TTPMS_T16 48
+
+[LR_TTPMS_6]
+ID=42Fh
+Len=8
+Sig=LR_TTPMS_TC 0
+Sig=LR_TTPMS_RSSI 16
+Sig=LR_TTPMS_T 32
+Sig=LR_TTPMS_NODE_ID 48
+
+[RF_TTPMS_1]
+ID=430h
+Len=8
+Sig=RF_TTPMS_SN 0
+Sig=RF_TTPMS_BAT_V 16
+Sig=RF_TTPMS_P 32
+Sig=RF_TTPMS_P_GAUGE 48
+
+[RF_TTPMS_2]
+ID=431h
+Len=8
+Sig=RF_TTPMS_T1 0
+Sig=RF_TTPMS_T2 16
+Sig=RF_TTPMS_T3 32
+Sig=RF_TTPMS_T4 48
+
+[RF_TTPMS_3]
+ID=432h
+Len=8
+Sig=RF_TTPMS_T5 0
+Sig=RF_TTPMS_T6 16
+Sig=RF_TTPMS_T7 32
+Sig=RF_TTPMS_T8 48
+
+[RF_TTPMS_4]
+ID=433h
+Len=8
+Sig=RF_TTPMS_T9 0
+Sig=RF_TTPMS_T10 16
+Sig=RF_TTPMS_T11 32
+Sig=RF_TTPMS_T12 48
+
+[RF_TTPMS_5]
+ID=434h
+Len=8
+Sig=RF_TTPMS_T13 0
+Sig=RF_TTPMS_T14 16
+Sig=RF_TTPMS_T15 32
+Sig=RF_TTPMS_T16 48
+
+[RF_TTPMS_6]
+ID=435h
+Len=8
+Sig=RF_TTPMS_TC 0
+Sig=RF_TTPMS_RSSI 16
+Sig=RF_TTPMS_T 32
+Sig=RF_TTPMS_NODE_ID 48
+
+[RR_TTPMS_1]
+ID=436h
+Len=8
+Sig=RR_TTPMS_SN 0
+Sig=RR_TTPMS_BAT_V 16
+Sig=RR_TTPMS_P 32
+Sig=RR_TTPMS_P_GAUGE 48
+
+[RR_TTPMS_2]
+ID=437h
+Len=8
+Sig=RR_TTPMS_T1 0
+Sig=RR_TTPMS_T2 16
+Sig=RR_TTPMS_T3 32
+Sig=RR_TTPMS_T4 48
+
+[RR_TTPMS_3]
+ID=438h
+Len=8
+Sig=RR_TTPMS_T5 0
+Sig=RR_TTPMS_T6 16
+Sig=RR_TTPMS_T7 32
+Sig=RR_TTPMS_T8 48
+
+[RR_TTPMS_4]
+ID=439h
+Len=8
+Sig=RR_TTPMS_T9 0
+Sig=RR_TTPMS_T10 16
+Sig=RR_TTPMS_T11 32
+Sig=RR_TTPMS_T12 48
+
+[RR_TTPMS_5]
+ID=43Ah
+Len=8
+Sig=RR_TTPMS_T13 0
+Sig=RR_TTPMS_T14 16
+Sig=RR_TTPMS_T15 32
+Sig=RR_TTPMS_T16 48
+
+[RR_TTPMS_6]
+ID=43Bh
+Len=8
+Sig=RR_TTPMS_TC 0
+Sig=RR_TTPMS_RSSI 16
+Sig=RR_TTPMS_T 32
+Sig=RR_TTPMS_NODE_ID 48
+
+[ACU_SHUNT_MEASUREMENTS]
+ID=401h
+Len=6
+Sig=current_shunt_read 0
+Sig=pack_filtered_read 16
+Sig=ts_out_filtered_read 32
+
+[STATE_OF_CHARGE]
+ID=41Eh
+Len=8
+Sig=charge_percentage 0
+Sig=min_cell_voltage_est 16
+Sig=charge_coulombs 32
+
+[PENTHOUSE_ACCUM_MSG]
+ID=0DFh
+Len=8
+Sig=hall_curr_ref 0
+Sig=hall_curr_signal 16
+
+[DRIVETRAIN_RPMS_TELEM]
+ID=200h
+Len=8
+Sig=fr_motor_rpm 0
+Sig=fl_motor_rpm 16
+Sig=rr_motor_rpm 32
+Sig=rl_motor_rpm 48
+
+[DRIVETRAIN_ERR_STATUS_TELEM]
+ID=201h
+Len=8
+Sig=mc1_diagnostic_number 0
+Sig=mc2_diagnostic_number 16
+Sig=mc3_diagnostic_number 32
+Sig=mc4_diagnostic_number 48
+
+[DRIVETRAIN_STATUS_TELEM]
+ID=202h
+Len=8
+Sig=mc1_dc_on 0
+Sig=mc1_derating_on 1
+Sig=mc1_error 2
+Sig=mc1_inverter_on 3
+Sig=mc1_quit_dc 4
+Sig=mc1_quit_inverter_on 5
+Sig=mc1_system_ready 6
+Sig=mc1_warning 7
+Sig=mc2_dc_on 8
+Sig=mc2_derating_on 9
+Sig=mc2_error 10
+Sig=mc2_inverter_on 11
+Sig=mc2_quit_dc 12
+Sig=mc2_quit_inverter_on 13
+Sig=mc2_system_ready 14
+Sig=mc2_warning 15
+Sig=mc3_dc_on 16
+Sig=mc3_derating_on 17
+Sig=mc3_error 18
+Sig=mc3_inverter_on 19
+Sig=mc3_quit_dc 20
+Sig=mc3_quit_inverter_on 21
+Sig=mc3_system_ready 22
+Sig=mc3_warning 23
+Sig=mc4_dc_on 24
+Sig=mc4_derating_on 25
+Sig=mc4_error 26
+Sig=mc4_inverter_on 27
+Sig=mc4_quit_dc 28
+Sig=mc4_quit_inverter_on 29
+Sig=mc4_system_ready 30
+Sig=mc4_warning 31
+Sig=accel_implausible 32
+Sig=brake_implausible 33
+Sig=brake_percent 40
+Sig=accel_percent 48
+
+[SAB_THERMISTORS_1]
+ID=0E5h
+Len=8
+Sig=thermistor_inv1 0
+Sig=thermistor_inv2 16
+Sig=thermistor_acc1 32
+Sig=thermistor_acc2 48
+
+[SAB_THERMISTORS_2]
+ID=0E6h
+Len=6
+Sig=thermistor_motor_rl 0
+Sig=thermistor_motor_rr 16
+Sig=thermistor_pump 32
+
+[SAB_SUSPENSION]
+ID=0E4h
+Len=8
+Sig=load_cell_rr 48
+Sig=load_cell_rl 32
+Sig=potentiometer_rl 0
+Sig=potentiometer_rr 16
+
+[TCU_STATUS]
+ID=0E8h
+Len=3
+Sig=shutdown_status 0
+Sig=tcu_recording_state 16
+
+[VN_VEL]
+ID=0D0h // Vehicle body velocity measured by VN-300
+Len=8
+Sig=vn_body_vel_x 0
+Sig=vn_body_vel_y 16
+Sig=vn_body_vel_z 32
+Sig=vn_vel_uncertainty 48
+
+[VN_LINEAR_ACCEL]
+ID=0D1h
+Len=8
+Sig=vn_lin_ins_accel_x 0
+Sig=vn_lin_ins_accel_y 16
+Sig=vn_lin_ins_accel_z 32
+
+[VN_LINEAR_ACCEL_UNCOMP]
+ID=0D2h
+Len=8
+Sig=vn_lin_uncomp_accel_x 0
+Sig=vn_lin_uncomp_accel_y 16
+Sig=vn_lin_uncomp_accel_z 32
+
+[VN_YPR]
+ID=0D3h
+Len=8
+Sig=vn_yaw 0
+Sig=vn_pitch 16
+Sig=vn_roll 32
+
+[VN_LAT_LON]
+ID=0D4h
+Len=8
+Sig=vn_gps_lat 0
+Sig=vn_gps_lon 32
+
+[VN_GPS_TIME_MSG]
+ID=0E0h
+Len=8
+Sig=vn_gps_time 0
+
+[VN_STATUS]
+ID=0E1h
+Len=8
+Sig=vn_gps_status 0
+
+[DRIVETRAIN_TORQUE_TELEM]
+ID=203h
+Len=8
+Sig=fl_motor_torque 0
+Sig=fr_motor_torque 16
+Sig=rl_motor_torque 32
+Sig=rr_motor_torque 48
+
+[MCU_SUSPENSION]
+ID=0C8h
+Len=8
+Sig=potentiometer_fl 0
+Sig=potentiometer_fr 16
+Sig=load_cell_fl 32
+Sig=load_cell_fr 48
+
+[VN_ANGULAR_RATE]
+ID=0E3h
+Len=8
+Sig=angular_rate_x 0
+Sig=angular_rate_y 16
+Sig=angular_rate_z 32
+
+[VN_ECEF_POS_XY]
+ID=0E7h
+Len=8
+Sig=vn_ecef_pos_x 0
+Sig=vn_ecef_pos_y 32
+
+[VN_ECEF_POS_Z_MSG]
+ID=0E9h
+Len=8
+Sig=vn_ecef_pos_z 0
+
+[MCU_PEDAL_RAW]
+ID=0CDh
+Len=8
+Sig=accel_1_raw 0
+Sig=accel_2_raw 12
+Sig=brake_1_raw 24
+Sig=brake_2_raw 36
+
+[CONTROLLER_PID_TV_DATA]
+ID=4EFh
+Len=8
+Sig=controller_input 0
+Sig=controller_output 20
+
+[CONTROLLER_PID_TV_DELTA_DATA]
+ID=4F0h
+Len=8
+Sig=pid_tv_fl_delta 0
+Sig=pid_tv_fr_delta 10
+Sig=pid_tv_rl_delta 20
+Sig=pid_tv_rr_delta 30
+
+[TC_SIMPLE]
+ID=0C9h // MCU's simple torque controller
+Len=8
+Sig=torque_request 0
+Sig=front_torque_scale 16
+Sig=accel_request_state 48
+Sig=rear_torque_scale 24
+Sig=front_regen_scale 32
+Sig=rear_regen_scale 40
+
+[TC_SIMPLE_LAUNCH]
+ID=0CAh
+Len=8
+Sig=launch_control_state 0
+Sig=initial_launch_target 8
+Sig=algo_active 2
+Sig=speed_setpoint_rpm 24
+
+[VEHM_ALPHA]
+ID=7FFh
+Len=8
+Sig=vehm_alpha_deg_fl 0
+Sig=vehm_alpha_deg_fr 16
+Sig=vehm_alpha_deg_rl 32
+Sig=vehm_alpha_deg_rr 48
+
+[VEHM_BETA]
+ID=7EFh
+Len=8
+Sig=vehm_beta_deg 0
+
+[VEHM_LONG_CORNER_VEL]
+ID=7CEh
+Len=8
+Sig=vehm_long_corner_vel_fl 0
+Sig=vehm_long_corner_vel_fr 16
+Sig=vehm_long_corner_vel_rl 32
+Sig=vehm_long_corner_vel_rr 48
+
+[VEHM_SL]
+ID=7CFh
+Len=8
+Sig=vehm_sl_fl 0
+Sig=vehm_sl_fr 16
+Sig=vehm_sl_rl 32
+Sig=vehm_sl_rr 48
+
+[VEHM_WHEEL_STEER_AVG_DEG_MSG]
+ID=7CAh
+Len=8
+Sig=vehm_wheel_steer_avg_deg 0
+
+[VEHM_KIN_DES_YAW_RATE_RAD_S_MSG]
+ID=7CBh
+Len=8
+Sig=vehm_kin_desired_yaw_rate_rad_s 0
+
+[CONTROLLER_PID_YAW]
+ID=7CDh
+Len=8
+Sig=vehm_kin_desired_yaw_rate_rad_s 0
+Sig=controller_yaw_rate_error 16
+Sig=controller_yaw_pid_output 32
+
+[CONTROLLER_PID_YAW_TORQUE]
+ID=7DAh
+Len=8
+Sig=controller_yaw_torque_fl 0
+Sig=controller_yaw_torque_fr 16
+Sig=controller_yaw_torque_rl 32
+Sig=controller_yaw_torque_rr 48
+
+[CONTROLLER_NORMAL_DIST]
+ID=7DBh
+Len=8
+Sig=controller_normal_percent_fl 0
+Sig=controller_normal_percent_fr 16
+Sig=controller_normal_percent_rl 32
+Sig=controller_normal_percent_rr 48
+
+[CONTROLLER_NORMAL_TORQUE]
+ID=7DCh
+Len=8
+Sig=controller_normal_torque_fl 0
+Sig=controller_normal_torque_fr 16
+Sig=controller_normal_torque_rl 32
+Sig=controller_normal_torque_rr 48
+
+[CONTROLLER_POWER_LIM]
+ID=7DEh
+Len=8
+Sig=controller_power_lim_status 0
+Sig=controller_power_lim_error 4
+Sig=controller_power_lim_torque_adj 20
+
+[CONTROLLER_POWER_LIM_CORNER_POW]
+ID=7EAh
+Len=8
+Sig=controller_power_lim_cornerp_fl 0
+Sig=controller_power_lim_cornerp_fr 16
+Sig=controller_power_lim_cornerp_rl 32
+Sig=controller_power_lim_cornerp_rr 48
+
+[CONTROLLER_POWER_LIM_TORQUE]
+ID=7EBh
+Len=8
+Sig=controller_power_lim_torque_fl 0
+Sig=controller_power_lim_torque_fr 16
+Sig=controller_power_lim_torque_rl 32
+Sig=controller_power_lim_torque_rr 48
+
+[CONTROLLER_BOOLEAN]
+ID=7ECh
+Len=8
+Sig=controller_use_launch 0
+Sig=controller_use_pid_tv 1
+Sig=controller_use_normal_force 2
+Sig=controller_use_pid_power_limit 3
+Sig=controller_use_power_limit 4
+Sig=controller_use_tcs 5
+Sig=controller_use_tcs_lim_yaw_pid 6
+Sig=controller_use_dec_yaw_pid_brake 7
+Sig=controller_use_discontin_brakes 8
+Sig=controller_use_no_regen_5kph 9
+Sig=controller_use_torque_bias 10
+Sig=controller_use_nl_tcs_gain_sche 11
+Sig=controller_use_rpm_tcs_gain_sche 12
+Sig=controller_use_nl_tcs_slipschedu 13
+
+[CONTROLLER_TORQUE_SETUP]
+ID=7FAh
+Len=8
+Sig=controller_initial_torque_req 0
+Sig=controller_constrained_torq_req 16
+Sig=controller_max_nl_brake_sc_front 56
+Sig=controller_regen_limit 32
+Sig=controller_torque_mode 44
+Sig=controller_max_yaw_nl_accel_perc 52
+
+[CONTROLLER_TCS_CONFIG]
+ID=7FBh
+Len=8
+Sig=controller_tcs_launch_dead_zone 0
+Sig=controller_tcs_launch_vel_thresh 8
+Sig=controller_tcs_vel_thresh 14
+Sig=controller_tcs_sl_nlperc_star_fr 22
+Sig=controller_tcs_sl_nlperc_end_fr 30
+Sig=controller_tcs_sl_nlperc_end_rr 38
+Sig=controller_tcs_sl_nlperc_star_rr 46
+
+[CONTROLLER_TCS_TORQUE]
+ID=7FCh
+Len=8
+Sig=controller_tcs_torque_fl 0
+Sig=controller_tcs_torque_fr 16
+Sig=controller_tcs_torque_rl 32
+Sig=controller_tcs_torque_rr 48
+
+[CONTROLLER_TCS_STATUS]
+ID=7FDh
+Len=8
+Sig=controller_tcs_status_fl 0
+Sig=controller_tcs_status_fr 2
+Sig=controller_tcs_status_rl 4
+Sig=controller_tcs_status_rr 6
+
+[CONTROLLER_TCS_PID_INPUT]
+ID=7FEh
+Len=8
+Sig=controller_tcs_pid_input_fl 0
+Sig=controller_tcs_pid_input_fr 16
+Sig=controller_tcs_pid_input_rl 32
+Sig=controller_tcs_pid_input_rr 48
+
+[CONTROLLER_TCS_PID_OUTPUT]
+ID=7AAh
+Len=8
+Sig=controller_tcs_pid_output_fl 0
+Sig=controller_tcs_pid_output_fr 16
+Sig=controller_tcs_pid_output_rl 32
+Sig=controller_tcs_pid_output_rr 48
+
+[VEHM_WHEEL_LIN_VEL]
+ID=7ABh
+Len=8
+Sig=vehm_wheel_lin_vel_fl 0
+Sig=vehm_wheel_lin_vel_fr 16
+Sig=vehm_wheel_lin_vel_rl 32
+Sig=vehm_wheel_lin_vel_rr 48
+
+[CONTROLLER_TORQUE_BIAS]
+ID=7ACh
+Len=8
+Sig=controller_bias_torq_avg_front 0
+Sig=controller_bias_torq_avg_rear 16
+
+[CONTROLLER_REGEN_5KPH_TORQUE]
+ID=7ADh
+Len=8
+Sig=controller_regen_5kph_torq_fl 0
+Sig=controller_regen_5kph_torq_fr 16
+Sig=controller_regen_5kph_torq_rl 32
+Sig=controller_regen_5kph_torq_rr 48
+
+[CONTROLLER_REGEN_5KPH_STATUS]
+ID=7AEh
+Len=8
+Sig=controller_regen_5kph_status_fl 0
+Sig=controller_regen_5kph_status_fr 1
+Sig=controller_regen_5kph_status_rl 2
+Sig=controller_regen_5kph_status_rr 3
+
+[CONTROLLER_YAW_PID_CONFIG]
+ID=7BAh
+Len=8
+Sig=controller_yaw_pid_p 0
+Sig=controller_yaw_pid_i 13
+Sig=controller_yaw_pid_d 23
+Sig=controller_yaw_pid_brakes_p 33
+Sig=controller_yaw_pid_brakes_i 44
+Sig=controller_yaw_pid_brakes_d 54
+
+[CONTROLLER_TCS_PID_CONFIG]
+ID=7AFh
+Len=8
+Sig=controller_tcs_pid_p_fl 0
+Sig=controller_tcs_pid_p_fr 16
+Sig=controller_tcs_pid_p_rl 32
+Sig=controller_tcs_pid_p_rr 48
+
+[FRONT_THERMISTORS]
+ID=0F5h
+Len=8
+Sig=thermistor_motor_fl 0
+Sig=thermistor_motor_fr 16
+
+[CONTROLLER_TCS_SATURATION_CONFIG]
+ID=7BBh
+Len=8
+Sig=controller_tcs_saturation_front 0
+Sig=controller_tcs_saturation_rear 12
+
+[CONTROLLER_TCS_DIFF_CONFIG]
+ID=7BDh
+Len=8
+Sig=controller_tcs_gen_LRdiff_lowerB 0
+Sig=controller_tcs_gen_LRdiff_upperB 13
+Sig=controller_tcs_w_steer_lower_b 27
+Sig=controller_tcs_w_steer_upper_b 39
+Sig=controller_tcs_launch_LRdiff 51
+
+[MCU_ERROR_STATES]
+ID=101h // this message will have states internal to the MCU code
+Len=8
+Sig=torque_controller_mux_status 0
+
+[STEERING_SYSTEM_REPORT]
+ID=41Fh // Steering reading; system and sensor status
+Len=8
+Sig=steering_system_angle 0
+Sig=steering_encoder_angle 16
+Sig=steering_analog_angle 32
+Sig=steering_system_status 48
+Sig=steering_encoder_status 50
+Sig=steering_analog_status 52
+
+[CONTROLLER_TCS_RPM_SCHE_CONFIG]
+ID=7BEh
+Len=8
+Sig=controller_tcs_lower_rpm_front 0
+Sig=controller_tcs_lower_rpm_rear 15
+Sig=controller_tcs_upper_rpm_front 30
+Sig=controller_tcs_upper_rpm_rear 45
+
+[CONTROLLER_TCS_NL_SCHE_CONFIG]
+ID=7CCh
+Len=8
+Sig=controller_tcs_endper_nl_front 0
+Sig=controller_tcs_endper_nl_rear 8
+Sig=controller_tcs_startper_nl_front 16
+Sig=controller_tcs_startper_nl_rear 24
+
+[CONTROLLER_TCS_CONFIG_CONT]
+ID=7BCh
+Len=8
+Sig=controller_tcs_lauSL_start_front 0
+Sig=controller_tcs_lauSL_end_front 8
+Sig=controller_tcs_lauSL_start_rear 16
+Sig=controller_tcs_lauSL_end_rear 24
+Sig=controller_tcs_SL_start_front 32
+Sig=controller_tcs_SL_end_front 40
+Sig=controller_tcs_SL_start_rear 48
+Sig=controller_tcs_SL_end_rear 56
+
+[CONTROLLER_TCS_SLIP_TARGETS]
+ID=7BFh
+Len=8
+Sig=controller_tcs_slip_target_front 0
+Sig=controller_tcs_slip_target_rear 12
+
+[TCMUX_STATUS_REPORT]
+ID=4F1h
+Len=8
+Sig=speed_above_thresh 0
+Sig=torque_delta_above_thresh 1
+Sig=tc_not_ready 2
+Sig=steering_system_has_err 3
+Sig=mode_intended 4
+Sig=mode_actual 12
+Sig=dash_dial_mode 20
+Sig=torque_mode 28
+Sig=torque_limit 36
+
+[VN_GNSS_COMP_SIG_HEALTH]
+ID=0EAh
+Len=8
+Sig=num_sats_pvt_1 0
+Sig=num_sats_rtk_1 8
+Sig=highest_cn0_1 16
+Sig=num_sats_pvt_2 24
+Sig=num_sats_rtk_2 32
+Sig=highest_cn0_2 40
+Sig=num_com_sats_pvt 48
+Sig=num_com_sats_rtk 56
+
+[DRIVETRAIN_COMMAND]
+ID=12Fh
+Len=8
+Sig=drivetrain_traj_torque_lim_fl 0
+Sig=drivetrain_traj_torque_lim_fr 16
+Sig=drivetrain_traj_torque_lim_rl 32
+Sig=drivetrain_traj_torque_lim_rr 48
+
+[DRIVETRAIN_FILTER_OUT_TORQUE_TEL]
+ID=204h
+Len=8
+Sig=fl_motor_torque 0
+Sig=fr_motor_torque 16
+Sig=rl_motor_torque 32
+Sig=rr_motor_torque 48
+
+[DRIVEBRAIN_TORQUE_LIM_INPUT]
+ID=0F1h
+Len=8
+Sig=drivebrain_torque_fl 0
+Sig=drivebrain_torque_fr 16
+Sig=drivebrain_torque_rl 32
+Sig=drivebrain_torque_rr 48
+
+[DRIVEBRAIN_SPEED_SET_INPUT]
+ID=0F2h
+Len=8
+Sig=drivebrain_set_rpm_fl 0
+Sig=drivebrain_set_rpm_fr 16
+Sig=drivebrain_set_rpm_rl 32
+Sig=drivebrain_set_rpm_rr 48
+
+[brake_temps]
+ID=000h
+Len=8
+
+{RECEIVE}
+
+[IZZE_IR_TEMPS]
+ID=4C4h
+Len=8
+Sig=izze_brake_IR_temp_1 0
+Sig=izze_brake_IR_temp_2 16
+Sig=izze_brake_IR_temp_3 32
+Sig=izze_brake_IR_temp_4 48
+
+{SENDRECEIVE}
+
+[MCI1_STATUS]
+ID=070h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=dc_bus_voltage 16
+Sig=diagnostic_number 32
+
+[MCI1_TEMPS]
+ID=071h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=igbt_temp 32
+
+[MCI1_DYNAMICS]
+ID=072h
+Len=8
+Sig=actual_power_w 0
+Sig=actual_torque_nm 32
+Sig=actual_speed_rpm 48
+
+[MCI1_POWER]
+ID=073h
+Len=8
+Sig=active_power_w 0
+Sig=reactive_power_var 32
+
+[MCI1_FEEDBACK]
+ID=074h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[MCI2_STATUS]
+ID=075h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=dc_bus_voltage 16
+Sig=diagnostic_number 32
+
+[MCI2_TEMPS]
+ID=076h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=igbt_temp 32
+
+[MCI2_DYNAMICS]
+ID=077h
+Len=8
+Sig=actual_power_w 0
+Sig=actual_torque_nm 32
+Sig=actual_speed_rpm 48
+
+[MCI2_POWER]
+ID=078h
+Len=8
+Sig=active_power_w 0
+Sig=reactive_power_var 32
+
+[MCI2_FEEDBACK]
+ID=079h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[MCI3_STATUS]
+ID=080h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=dc_bus_voltage 16
+Sig=diagnostic_number 32
+
+[MCI3_TEMPS]
+ID=081h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=igbt_temp 32
+
+[MCI3_DYNAMICS]
+ID=082h
+Len=8
+Sig=actual_power_w 0
+Sig=actual_torque_nm 32
+Sig=actual_speed_rpm 48
+
+[MCI3_POWER]
+ID=083h
+Len=8
+Sig=active_power_w 0
+Sig=reactive_power_var 32
+
+[MCI3_FEEDBACK]
+ID=084h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[MCI4_STATUS]
+ID=085h
+Len=8
+Sig=system_ready 8
+Sig=error 9
+Sig=warning 10
+Sig=quit_dc_on 11
+Sig=dc_on 12
+Sig=quit_inverter_on 13
+Sig=inverter_on 14
+Sig=derating_on 15
+Sig=dc_bus_voltage 16
+Sig=diagnostic_number 32
+
+[MCI4_TEMPS]
+ID=086h
+Len=8
+Sig=motor_temp 0
+Sig=inverter_temp 16
+Sig=igbt_temp 32
+
+[MCI4_DYNAMICS]
+ID=087h
+Len=8
+Sig=actual_power_w 0
+Sig=actual_torque_nm 32
+Sig=actual_speed_rpm 48
+
+[MCI4_POWER]
+ID=088h
+Len=8
+Sig=active_power_w 0
+Sig=reactive_power_var 32
+
+[MCI4_FEEDBACK]
+ID=089h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32

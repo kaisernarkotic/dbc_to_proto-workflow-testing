@@ -39,7 +39,7 @@ jobs:
 
       - name: Convert DBC to PROTO
         run: |
-          cantools convert ${{ github.workspace }}/hytech.dbc hytech.proto
+          cantools convert hytech.dbc hytech.proto
         
       - name: Upload artifact
         uses: actions/upload-artifact@v4

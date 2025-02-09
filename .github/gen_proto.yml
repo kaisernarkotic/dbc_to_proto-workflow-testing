@@ -1,0 +1,83 @@
+name: Proto File Generation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-proto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'  # Specify the Python version
+      
+      - name: Install cantools
+        run: python -m pip install cantools  # Install cantools library
+
+      - name: Convert DBC to PROTO
+        run: |
+          cantools convert ${{ github.workspace }}/hytech.dbc hytech.proto
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: protofile
+          path: hytech.proto
+  generate-and-release:
+    needs: generate-proto
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rcmast3r/ccoderdbc:main #???
+    - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: protofile
+          path: /proto
+      - name: generate code
+        run: | #convert to proto
+          mkdir -p /hytech_can_lib
+          cd /app
+          ./build/coderproto -rw -proto /proto/hytech.proto -out /hytech_can_lib -drvname hytech
+          mkdir -p /output
+          echo "{\n\"name\": \"can_lib\",\n\"version\": \"1.0.0\",\n\"build\": {\n\t\"flags\": [\n\t\t\"-Iinc\",\n\t\t\"-Ilib\",\n\t\t\"-Iconf\"\n\t]\n}\n}" >> /hytech_can_lib/library.json
+          tar -czvf /output/can_lib.tar.gz /hytech_can_lib
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TESTING_TOKEN }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TESTING_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /output/can_lib.tar.gz
+          asset_name: can_lib.tar.gz
+          asset_content_type: application/zip
+
+      - name: Upload hytech.proto
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TESTING_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /proto/hytech.proto
+          asset_name: hytech.proto
+          asset_content_type: text/plain
+
+
+      

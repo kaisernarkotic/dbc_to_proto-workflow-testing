@@ -1,0 +1,67 @@
+name: Proto File Generation
+
+on:
+  workflow_run:
+    workflows: ["Generate and Release"]
+    types:
+      - completed
+
+jobs:
+  generate-proto:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'  # Specify the Python version
+      
+      - name: Install cantools
+        run: python -m pip install cantools  # Install cantools library
+
+      - name: Download dbc artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: success
+          name: dbcfile
+          path: hytech.dbc
+      
+      - name: Download tag name artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: success
+          name: tag-name-artifact
+        
+
+      - name: Convert DBC to PROTO
+        run: |
+          cantools convert ${{ github.workspace }}/hytech.dbc hytech.proto
+        
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: protofile
+          path: hytech.proto
+      
+      - name: Set tag_name from file
+        run: |
+            TAG_NAME=$(cat release_name.txt)
+            echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
+    
+      - name: Upload to existing release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.release_name }}
+          files: |
+            hytech.proto
+      
+
+      
+      
+
+
+      

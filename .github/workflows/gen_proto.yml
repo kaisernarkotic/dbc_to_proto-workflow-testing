@@ -27,7 +27,7 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: success
           name: dbcfile
-          path: hytech.dbc
+          path: .
       
       - name: Download tag name artifact
         uses: dawidd6/action-download-artifact@v2

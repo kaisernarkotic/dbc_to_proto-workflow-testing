@@ -57,7 +57,7 @@ jobs:
         with:
           tag_name: ${{ env.release_name }}
           files: |
-            hytech.proto
+            ./docs/${{ env.release_name }}.html
       
 
       

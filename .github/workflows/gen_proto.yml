@@ -55,9 +55,9 @@ jobs:
       - name: Upload to existing release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG_NAME }}
+          tag_name: ${{ env.tag_name }}
           files: |
-            ./docs/${{ env.TAG_NAME }}.html
+            ./docs/${{ env.tag_name }}.html
       
 
       

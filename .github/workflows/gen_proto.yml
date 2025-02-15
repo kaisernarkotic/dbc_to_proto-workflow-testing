@@ -51,15 +51,15 @@ jobs:
       
       - name: Set tag_name from file
         run: |
-            TAG_NAME=$(cat release_name.txt)
+            TAG_NAME=$(cat tag_name.txt)
             echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
     
       - name: Upload to existing release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.release_name }}
+          tag_name: ${{ env.tag_name }}
           files: |
-            ./docs/${{ env.release_name }}.html
+            ./docs/${{ env.tag_name }}.html
       
 
       

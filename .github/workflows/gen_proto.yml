@@ -28,8 +28,6 @@ jobs:
           workflow_conclusion: success
           name: dbcfile
           path: .
-      - name: List files to debug
-        run: ls -R
       
       - name: Download tag name artifact
         uses: dawidd6/action-download-artifact@v2
@@ -41,7 +39,7 @@ jobs:
 
       - name: Convert DBC to PROTO
         run: |
-          python dbc_to_proto.py dbcfile hytech.proto
+          python dbc_to_proto.py dbcfile/hytech.dbc hytech.proto
         
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -57,9 +55,9 @@ jobs:
       - name: Upload to existing release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.tag_name }}
+          tag_name: ${{ env.TAG_NAME }}
           files: |
-            ./docs/${{ env.tag_name }}.html
+            ./docs/${{ env.TAG_NAME }}.html
       
 
       

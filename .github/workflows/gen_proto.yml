@@ -27,7 +27,7 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: success
           name: dbcfile
-          path: ./dbc_to_proto
+          path: .
       
       - name: Download tag name artifact
         uses: dawidd6/action-download-artifact@v2
@@ -46,7 +46,7 @@ jobs:
 
       - name: Convert DBC to PROTO
         run: |
-          python dbc_to_proto.py dbcfile hytech.proto
+          python dbc_to_proto/dbc_to_proto.py dbcfile hytech.proto
         
       
       - name: Set tag_name from file

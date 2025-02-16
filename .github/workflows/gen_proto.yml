@@ -58,7 +58,7 @@ jobs:
           
           curl -o proto/nanopb/google/protobuf/descriptor.proto https://raw.githubusercontent.com/nanopb/nanopb/nanopb-0.4.9.1/generator/proto/google/protobuf/descriptor.proto
           curl -o proto/nanopb/nanopb.proto https://raw.githubusercontent.com/nanopb/nanopb/nanopb-0.4.9.1/generator/proto/nanopb.proto
-          protoc -I=proto -I=proto/nanopb --doc_out=./docs --doc_opt=html,${{ env.tag_name }}.html hytech.proto
+          protoc -I=./. -I=proto/nanopb --doc_out=./docs --doc_opt=html,${{ env.tag_name }}.html hytech.proto
 
       - name: Upload to existing release
         uses: softprops/action-gh-release@v1
@@ -68,7 +68,6 @@ jobs:
           tag_name: ${{ env.tag_name }}
           files: |
             ./docs/${{ env.tag_name }}.html
-        continue-on-error: true
       
 
       

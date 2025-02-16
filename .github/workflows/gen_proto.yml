@@ -35,6 +35,13 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           workflow_conclusion: success
           name: tag-name-artifact
+      
+      - name: Download upload_url artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          workflow_conclusion: success
+          name: upload-url-artifact
         
 
       - name: Convert DBC to PROTO
@@ -46,6 +53,11 @@ jobs:
         run: |
             TAG_NAME=$(cat tag_name.txt)
             echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Set upload_url from file
+        run: |
+            UPLOAD_URL=$(cat upload_url.txt)
+            echo "upload_url=$UPLOAD_URL" >> $GITHUB_ENV
     
       - name: Set up Protobuf tools and generate HTML file
         run: |
@@ -61,10 +73,11 @@ jobs:
           protoc -I=./. -I=proto/nanopb --doc_out=./docs --doc_opt=html,${{ env.tag_name }}.html hytech.proto
 
       - name: Upload to existing release
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.TESTING_TOKEN }}
         with:
-          tag_name: ${{ env.tag_name }}
-          files: |
-            ./docs/${{ env.tag_name }}.html
+          upload_url: ${{ env.upload_url }}
+          asset_path: ./docs/${{ env.tag_name }}.html
+          asset_name: ${{ env.tag_name }}.html
+          asset_content_type: text/plain

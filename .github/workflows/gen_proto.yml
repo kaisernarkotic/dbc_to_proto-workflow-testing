@@ -51,19 +51,16 @@ jobs:
         run: |
             TAG_NAME=$(cat tag_name.txt)
             echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
-      - name: Check if release file exists
-        run: |
-          if [ ! -f "./docs/${{ env.TAG_NAME }}.html" ]; then
-            echo "🚨 File ./docs/${{ env.TAG_NAME }}.html not found. Skipping upload."
-            exit 0
-          fi
     
       - name: Upload to existing release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TESTING_TOKEN }}
         with:
           tag_name: ${{ env.tag_name }}
           files: |
             ./docs/${{ env.tag_name }}.html
+        continue-on-error: true
       
 
       

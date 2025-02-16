@@ -10,15 +10,15 @@ Enum=vn_gps_fixE(0="NO_FIX", 1="TIME_ONLY", 2="FIX_2D", 3="FIX_3D")
 Enum=tcu_recordingE(0="NOT_RECORDING", 1="REQUESTING_RECORD", 2="RECORDING", 3="SAVING_RECORDING")
 Enum=tc_mux_status(0="NO_ERROR", 1="ERROR_SPEED_DIFF_TOO_HIGH", 2="ERROR_TORQUE_DIFF_TOO_HIGH",
   3="ERROR_CONTROLLER_INDEX_OUT_OF_BOUNDS", 4="ERROR_CONTROLLER_NULL_POINTER")
-Enum=steering_analog_statusE(0="", // GOOD!
-  1="") // Clamped!
-Enum=steering_system_statusE(0="", // nominal
-  1="", // marginal
-  2="", // degraded
-  3="") // error
-Enum=steering_encoder_statusE(0="", // nominal
-  1="", // marginal
-  2="") // error
+Enum=steering_analog_statusE(0="GOOD", // GOOD!
+  1="CLAMPED") // Clamped!
+Enum=steering_system_statusE(0="SYSTEM_NOMINAL", // nominal
+  1="SYSTEM_MARGINAL", // marginal
+  2="SYSTEM_DEGRADED", // degraded
+  3="SYSTEM_ERROR") // error
+Enum=steering_encoder_statusE(0="ENCODER_NOMINAL", // nominal
+  1="ENCODER_MARGINAL", // marginal
+  2="ENCODER_ERROR") // error
 
 {SIGNALS}
 Sig=system_ready unsigned 1
@@ -221,9 +221,9 @@ Sig=left_shifter_button unsigned 1
 Sig=right_shifter_button unsigned 1
 Sig=load_cell_fl unsigned 16 /u:lbs /ln:"Front Left Load Cell"
 Sig=load_cell_fr unsigned 16 /u:lbs /ln:"Front Right Load Cell"
-Sig=load_cell_rl unsigned 16 /u:lbs /ln:"Rear Left Load Cell"
-Sig=load_cell_rr unsigned 16 /u:lbs /ln:"Rear Right Load Cell"
-Sig=em_voltage signed 32 -m /u:Volts /f:1.52590219E-005 /e:steering_system_statusE /ln:"energy_meter_voltage" // The voltage, in Volts, measured by the Energy Meter.
+Sig=rl_load_cell unsigned 16 /ln:"Rear Left Load Cell"
+Sig=rr_load_cell unsigned 16 /ln:"Rear Right Load Cell"
+Sig=em_voltage signed 32 -m /u:Volts /f:1.52590219E-005 /ln:"energy_meter_voltage" // The voltage, in Volts, measured by the Energy Meter.
 Sig=em_current signed 32 -m /u:Coulombs /f:1.52590219E-005 /ln:"energy_meter_current_amps" // The current draw, in amps, measured by the Energy Meter.
 Sig=RR_TTPMS_TC unsigned 16 -m
 Sig=RR_TTPMS_RSSI signed 16 -m /u:dBm
@@ -403,8 +403,8 @@ Sig=fr_motor_torque signed 16 /u:nm
 Sig=fl_motor_torque signed 16 /u:nm
 Sig=rr_motor_torque signed 16 /u:nm
 Sig=rl_motor_torque signed 16 /u:nm
-Sig=potentiometer_rl unsigned 16 /u:lbs /ln:"Rear Left Potentiometer"
-Sig=potentiometer_rr unsigned 16 /u:lbs /ln:"Rear Right Potentiometer"
+Sig=rl_shock_pot unsigned 16 /ln:"Rear Left Potentiometer"
+Sig=rr_shock_pot unsigned 16 /ln:"Rear Right Potentiometer"
 Sig=tcu_recording_state unsigned 2 // The current state of TCU data recording (off, requested,on,saving)
 Sig=brake_percent_float unsigned 8 /u:percent /f:0.39215686275 /ln:"acceleration pedal percent travel" // The percentage of accel pedal travel represented by an unsigned float
 Sig=mechanical_brake_percent_float unsigned 8 /u:percent /f:0.39215686275 // The percentage at which mechanical brake activates represented by an unsigned float
@@ -573,8 +573,8 @@ Sig=controller_tcs_sl_nlperc_star_rr unsigned 8 /f:0.01
 Sig=controller_tcs_sl_nlperc_end_rr unsigned 8 /f:0.01
 Sig=controller_tcs_slip_target_front unsigned 12 /f:0.001
 Sig=controller_tcs_slip_target_rear unsigned 12 /f:0.001
-Sig=steering_encoder_angle signed 16 /u:deg /f:0.01 // Angle measured by upper steering encoder
-Sig=steering_analog_angle signed 16 /f:0.01 // Angle measured by bottom steering analog sensor
+Sig=steering_digital_raw float // raw measurement by digital steering encoder
+Sig=steering_analog_raw unsigned 16 // raw measurement as measured by bottom steering analog sensor
 Sig=speed_above_thresh unsigned 1 // Vehicle speed is above 5 m/s, TCMux does not allow driver to switch mode
 Sig=torque_delta_above_thresh unsigned 1 // Torque delta between old and new controllers is < 0.5Nm on every wheel
 Sig=tc_not_ready unsigned 1 // Selected TC not in ready state
@@ -617,6 +617,16 @@ Sig=reactive_power_var signed 32
 Sig=speed_control_kp unsigned 16
 Sig=speed_control_ki unsigned 16
 Sig=speed_control_kd unsigned 16
+Sig=accel_pedal_active bit
+Sig=brake_accel_implausibility bit // brake and accel are pressed
+Sig=implaus_exceeded_max_duration bit // a pedal implausibility has been present for longer than allowed
+Sig=accel_pedal unsigned 16 /f:1.5259E-005 // the scaled accelerator pedal value
+Sig=brake_pedal unsigned 16 /f:1.5259E-005 // the scaled brake pedal value between 0 and 1
+Sig=fl_load_cell unsigned 16 /ln:"Front Left Load Cell"
+Sig=fl_shock_pot unsigned 16 /ln:"Front Left Shock Pot"
+Sig=fr_shock_pot unsigned 16 /ln:"Front Right Shock Pot"
+Sig=fr_load_cell unsigned 16 /ln:"Front Right Load Cell"
+Sig=torque_setpoint signed 16
 
 {SENDRECEIVE}
 
@@ -1001,23 +1011,10 @@ Len=4
 Sig=load_cell_fl 0
 Sig=load_cell_fr 16
 
-[MCU_PEDAL_READINGS]
-ID=0C4h
-Len=8
-Sig=accel_percent_float 0
-Sig=brake_percent_float 8
-Sig=mechanical_brake_percent_float 16
-
 [BRAKE_PRESSURE_SENSOR]
 ID=0CBh
 Len=2
 Sig=brake_sensor_analog_read 0
-
-[MCU_REAR_POTS]
-ID=0C7h
-Len=4
-Sig=potentiometer_rl 0
-Sig=potentiometer_rr 16
 
 [MCU_STATUS]
 ID=0C3h
@@ -1383,13 +1380,13 @@ Sig=thermistor_motor_rl 0
 Sig=thermistor_motor_rr 16
 Sig=thermistor_pump 32
 
-[SAB_SUSPENSION]
+[REAR_SUSPENSION]
 ID=0E4h
 Len=8
-Sig=load_cell_rr 48
-Sig=load_cell_rl 32
-Sig=potentiometer_rl 0
-Sig=potentiometer_rr 16
+Sig=rr_load_cell 16
+Sig=rl_load_cell 0
+Sig=rl_shock_pot 32
+Sig=rr_shock_pot 48
 
 [TCU_STATUS]
 ID=0E8h
@@ -1754,15 +1751,11 @@ ID=101h // this message will have states internal to the MCU code
 Len=8
 Sig=torque_controller_mux_status 0
 
-[STEERING_SYSTEM_REPORT]
+[STEERING_DATA]
 ID=41Fh // Steering reading; system and sensor status
-Len=8
-Sig=steering_system_angle 0
-Sig=steering_encoder_angle 16
-Sig=steering_analog_angle 32
-Sig=steering_system_status 48
-Sig=steering_encoder_status 50
-Sig=steering_analog_status 52
+Len=6
+Sig=steering_analog_raw 0
+Sig=steering_digital_raw 16
 
 [CONTROLLER_TCS_RPM_SCHE_CONFIG]
 ID=7BEh
@@ -1871,7 +1864,7 @@ Sig=izze_brake_IR_temp_4 48
 
 {SENDRECEIVE}
 
-[MCI1_STATUS]
+[INV1_STATUS]
 ID=070h
 Len=8
 Sig=system_ready 8
@@ -1885,34 +1878,34 @@ Sig=derating_on 15
 Sig=dc_bus_voltage 16
 Sig=diagnostic_number 32
 
-[MCI1_TEMPS]
+[INV1_TEMPS]
 ID=071h
 Len=8
 Sig=motor_temp 0
 Sig=inverter_temp 16
 Sig=igbt_temp 32
 
-[MCI1_DYNAMICS]
+[INV1_DYNAMICS]
 ID=072h
 Len=8
 Sig=actual_power_w 0
 Sig=actual_torque_nm 32
 Sig=actual_speed_rpm 48
 
-[MCI1_POWER]
+[INV1_POWER]
 ID=073h
 Len=8
 Sig=active_power_w 0
 Sig=reactive_power_var 32
 
-[MCI1_FEEDBACK]
+[INV1_FEEDBACK]
 ID=074h
 Len=8
 Sig=speed_control_kp 0
 Sig=speed_control_ki 16
 Sig=speed_control_kd 32
 
-[MCI2_STATUS]
+[INV2_STATUS]
 ID=075h
 Len=8
 Sig=system_ready 8
@@ -1926,34 +1919,34 @@ Sig=derating_on 15
 Sig=dc_bus_voltage 16
 Sig=diagnostic_number 32
 
-[MCI2_TEMPS]
+[INV2_TEMPS]
 ID=076h
 Len=8
 Sig=motor_temp 0
 Sig=inverter_temp 16
 Sig=igbt_temp 32
 
-[MCI2_DYNAMICS]
+[INV2_DYNAMICS]
 ID=077h
 Len=8
 Sig=actual_power_w 0
 Sig=actual_torque_nm 32
 Sig=actual_speed_rpm 48
 
-[MCI2_POWER]
+[INV2_POWER]
 ID=078h
 Len=8
 Sig=active_power_w 0
 Sig=reactive_power_var 32
 
-[MCI2_FEEDBACK]
+[INV2_FEEDBACK]
 ID=079h
 Len=8
 Sig=speed_control_kp 0
 Sig=speed_control_ki 16
 Sig=speed_control_kd 32
 
-[MCI3_STATUS]
+[INV3_STATUS]
 ID=080h
 Len=8
 Sig=system_ready 8
@@ -1967,34 +1960,34 @@ Sig=derating_on 15
 Sig=dc_bus_voltage 16
 Sig=diagnostic_number 32
 
-[MCI3_TEMPS]
+[INV3_TEMPS]
 ID=081h
 Len=8
 Sig=motor_temp 0
 Sig=inverter_temp 16
 Sig=igbt_temp 32
 
-[MCI3_DYNAMICS]
+[INV3_DYNAMICS]
 ID=082h
 Len=8
 Sig=actual_power_w 0
 Sig=actual_torque_nm 32
 Sig=actual_speed_rpm 48
 
-[MCI3_POWER]
+[INV3_POWER]
 ID=083h
 Len=8
 Sig=active_power_w 0
 Sig=reactive_power_var 32
 
-[MCI3_FEEDBACK]
+[INV3_FEEDBACK]
 ID=084h
 Len=8
 Sig=speed_control_kp 0
 Sig=speed_control_ki 16
 Sig=speed_control_kd 32
 
-[MCI4_STATUS]
+[INV4_STATUS]
 ID=085h
 Len=8
 Sig=system_ready 8
@@ -2008,28 +2001,141 @@ Sig=derating_on 15
 Sig=dc_bus_voltage 16
 Sig=diagnostic_number 32
 
-[MCI4_TEMPS]
+[INV4_TEMPS]
 ID=086h
 Len=8
 Sig=motor_temp 0
 Sig=inverter_temp 16
 Sig=igbt_temp 32
 
-[MCI4_DYNAMICS]
+[INV4_DYNAMICS]
 ID=087h
 Len=8
 Sig=actual_power_w 0
 Sig=actual_torque_nm 32
 Sig=actual_speed_rpm 48
 
-[MCI4_POWER]
+[INV4_POWER]
 ID=088h
 Len=8
 Sig=active_power_w 0
 Sig=reactive_power_var 32
 
-[MCI4_FEEDBACK]
+[INV4_FEEDBACK]
 ID=089h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[PEDALS_SYSTEM_DATA]
+ID=0C0h
+Len=5
+Sig=accel_implausible 0
+Sig=brake_implausible 1
+Sig=brake_pedal_active 2
+Sig=accel_pedal_active 3
+Sig=mechanical_brake_active 4
+Sig=brake_accel_implausibility 5
+Sig=implaus_exceeded_max_duration 6
+Sig=accel_pedal 8
+Sig=brake_pedal 24
+
+[FRONT_SUSPENSION]
+ID=0EDh
+Len=8
+Sig=fl_load_cell 0
+Sig=fl_shock_pot 16
+Sig=fr_load_cell 32
+Sig=fr_shock_pot 48
+
+[INV1_CONTROL_WORD]
+ID=090h
+Len=8
+Sig=inverter_enable 0
+Sig=hv_enable 1
+Sig=driver_enable 2
+Sig=remove_error 3
+
+[INV2_CONTROL_WORD]
+ID=091h
+Len=8
+Sig=inverter_enable 0
+Sig=hv_enable 1
+Sig=driver_enable 2
+Sig=remove_error 3
+
+[INV3_CONTROL_WORD]
+ID=092h
+Len=8
+Sig=inverter_enable 0
+Sig=hv_enable 1
+Sig=driver_enable 2
+Sig=remove_error 3
+
+[INV4_CONTROL_WORD]
+ID=093h
+Len=8
+Sig=inverter_enable 0
+Sig=hv_enable 1
+Sig=driver_enable 2
+Sig=remove_error 3
+
+[INV1_CONTROL_INPUT]
+ID=097h
+Len=8
+Sig=speed_setpoint_rpm 0
+Sig=positive_torque_limit 16
+Sig=negative_torque_limit 32
+Sig=torque_setpoint 48
+
+[INV2_CONTROL_INPUT]
+ID=098h
+Len=8
+Sig=speed_setpoint_rpm 0
+Sig=positive_torque_limit 16
+Sig=negative_torque_limit 32
+Sig=torque_setpoint 48
+
+[INV3_CONTROL_INPUT]
+ID=099h
+Len=8
+Sig=speed_setpoint_rpm 0
+Sig=positive_torque_limit 16
+Sig=negative_torque_limit 32
+Sig=torque_setpoint 48
+
+[INV4_CONTROL_INPUT]
+ID=102h
+Len=8
+Sig=speed_setpoint_rpm 0
+Sig=positive_torque_limit 16
+Sig=negative_torque_limit 32
+Sig=torque_setpoint 48
+
+[INV1_CONTROL_PARAMETER]
+ID=103h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[INV2_CONTROL_PARAMETER]
+ID=104h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[INV3_CONTROL_PARAMETER]
+ID=105h
+Len=8
+Sig=speed_control_kp 0
+Sig=speed_control_ki 16
+Sig=speed_control_kd 32
+
+[INV4_CONTROL_PARAMETER]
+ID=106h
 Len=8
 Sig=speed_control_kp 0
 Sig=speed_control_ki 16

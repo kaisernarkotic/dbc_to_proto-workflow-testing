@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TESTING_TOKEN }}
         with:
           tag_name: Release_${{ github.run_number }}
-          release_name: Release ${{ github.run_number }}
+          release_name: Release-${{ github.run_number }}
           draft: false
           prerelease: false
 
@@ -82,7 +82,7 @@ jobs:
           asset_content_type: text/plain
       
       - name: Upload release name
-        run: echo "Release ${{github.run_number}}" > tag_name.txt
+        run: echo "Release-${{github.run_number}}" > tag_name.txt
       
       - name: Upload tag_name as artifact
         uses: actions/upload-artifact@v4

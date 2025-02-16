@@ -132,7 +132,7 @@ if(len (sys.argv) > 1):
     path_to_dbc = sys.argv[1]
 else:
     path_to_dbc = os.environ.get('DBC_PATH')
-full_path = "hytech.dbc" #os.path.join(path_to_dbc, "hytech.dbc")
+full_path = os.path.join(path_to_dbc, "hytech.dbc")
 db = cantools.database.load_file(full_path)
 content = ""
 with open("hytech.proto", "w+") as proto_file:

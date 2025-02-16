@@ -46,7 +46,7 @@ jobs:
 
       - name: Convert DBC to PROTO
         run: |
-          python dbc_to_proto/dbc_to_proto.py dbcfile hytech.proto
+          python dbc_to_proto/dbc_to_proto.py ./ hytech.proto
         
       
       - name: Set tag_name from file
